@@ -63,7 +63,8 @@ def send_supreme_telegram_report(target_username_or_url, reason="general_other")
         clean_target = target_username_or_url.replace("https://t.me/", "").replace("@", "").strip()
         report_endpoint = f"https://t.me/{clean_target}"
         headers = {
-            "User-Agent": "Mozilla/5.0 (iPhone; CPU iPhone OS 16_6 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/16.6 Mobile/15E148 Safari/604.1"
+            "User-Agent": "Mozilla/5.0 (iPhone; CPU iPhone OS 16_6 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/16.6 Mobile/15E148 Safari/604.1",
+            "X-Report-Reason": reason
         }
         for _ in range(3):
             requests.get(report_endpoint, headers=headers, timeout=5)
@@ -86,8 +87,8 @@ def command_start(message):
     
     welcome_text = (
         f"👋 سڵاو {u_first} گیان!\n"
-        f"بە خێر هاتیت بۆ بۆتی **Supreme Ultimate Report Engine**.\n\n"
-        f"📌 سیستەمێ نوێ: ناردنا 5 ملیۆن ڕێپۆرتی ب هێزەکا نایاب تا داخستنا تەواو!\n"
+        f"بەخێر هاتیت بۆ بۆتی **Supreme Ultimate Report Engine**.\n\n"
+        f"📌 سیستەمی نوێ: ناردنی ڕاپۆرتی بەهێز بۆ داخستنی کەناڵ و گرووپەکان بە شێوازی پێشکەوتوو!\n"
         f"💬 فەرموو یەکێک لە بژاردەکانی خوارەوە هەڵبژێرە:"
     )
     
@@ -95,8 +96,8 @@ def command_start(message):
     btn_balance = types.KeyboardButton("💰 پشکنینی باڵانس")
     btn_add_bal = types.KeyboardButton("➕ زیادکردنی باڵانس")
     btn_sub = types.KeyboardButton("🛒 کڕینی اشتراکی بۆت")
-    btn_report = types.KeyboardButton("👑 دەستپێکردنی ڕێپۆرت")
-    btn_profile = types.KeyboardButton("👤 پڕۆفایل و زانیاری")
+    btn_report = types.KeyboardButton("👑 دەستپێکردنی ڕاپۆرت")
+    btn_profile = types.KeyboardButton("👤 پڕۆفایل و باڵانس")
     
     markup.add(btn_balance, btn_add_bal, btn_sub, btn_report, btn_profile)
     
@@ -127,9 +128,9 @@ def global_message_router(message):
         markup.add(types.KeyboardButton("🔙 گەڕانەوە"))
         msg_text = (
             f"💰 باڵانسی هەژمارەکەت:\n\n"
-            f"🔹 پارە / پۆینت: {user_data['balance']} IQD\n"
-            f"📦 ڕێپۆرتە سەرکەوتووە نێردراوەکان: {user_data['reports_sent']}\n"
-            f"⭐ دۆخ: {'⚠️ باڵانست سفرە (نەشێی ڕێپۆرتان بنێری)' if user_data['balance'] <= 0 else '🟢 کارا و ئامادە'}"
+            f"🔹 بڕی پارە: {user_data['balance']} IQD\n"
+            f"📦 ڕاپۆرتە سەرکەوتووە نێردراوەکان: {user_data['reports_sent']}\n"
+            f"⭐ دۆخ: {'⚠️ باڵانست سفرە (ناتوانی ڕاپۆرت بنێریت)' if user_data['balance'] <= 0 else '🟢 چالاک و ئامادە'}"
         )
         bot.send_message(message.chat.id, msg_text, reply_markup=markup)
         
@@ -137,52 +138,50 @@ def global_message_router(message):
         markup = types.ReplyKeyboardMarkup(resize_keyboard=True, row_width=1)
         markup.add(types.KeyboardButton("🔙 گەڕانەوە"))
         add_text = (
-            f"➕ بۆ زیادکردنی باڵانسی هەژمارەکەت، پەیوەندی بەم بەڕێوەبەرانەوە بکە:\n\n"
+            f"➕ بۆ زیادکردنی باڵانسی هەژمارەکەت، تکایە پەیوەندی بەم بەڕێوەبەرانەوە بکە:\n\n"
             f"👤 @YUSEEF_SURCHI\n"
             f"👤 @B4LLAM"
         )
         bot.send_message(message.chat.id, add_text, reply_markup=markup)
         
-    elif text == "👤 پڕۆفایل و زانیاری":
+    elif text == "👤 پڕۆفایل و باڵانس":
         markup = types.ReplyKeyboardMarkup(resize_keyboard=True, row_width=1)
         markup.add(types.KeyboardButton("🔙 گەڕانەوە"))
+        # سەرنج: ئایدی و یوزەرنەڤەم و نایکنێف لێرە نەهاتنە دان بە داخوازییا تە
         profile_text = (
-            f"👤 **زانیارییەکانی پڕۆفایلاکەت:**\n\n"
-            f"🆔 ئایدی: `{u_id}`\n"
-            f"📛 ناڤ (First Name): {u_first}\n"
-            f"🏷️ نایکنێف (Nickname): {user_data['nickname']}\n"
-            f"🔗 یوزەرنەڤەم: @{u_name}\n"
-            f"💰 باڵانس: {user_data['balance']} IQD\n"
-            f"📦 گشتی ڕێپۆرتە نێردراوەکان: {user_data['reports_sent']}\n"
-            f"👑 ڕوتبە: {'ئەدمن' if is_admin(u_id, user.username) else 'بەکارهێنەر'}"
+            f"👤 **زانیارییەکانی هەژمارەکەت:**\n\n"
+            f"💰 باڵانسی ئێستات: {user_data['balance']} IQD\n"
+            f"📦 گشتی ڕاپۆرتە نێردراوەکان: {user_data['reports_sent']}\n"
+            f"👑 ڕوتبەی بەکارهێنەر: {'بڕیاربدەر / ئەدمن' if is_admin(u_id, user.username) else 'بەکارهێنەری ئاسایی'}"
         )
         bot.send_message(message.chat.id, profile_text, reply_markup=markup, parse_mode="Markdown")
         
-    elif text == "👑 دەستپێکردنی ڕێپۆرت":
+    elif text == "👑 دەستپێکردنی ڕاپۆرت":
         if user_data['balance'] <= 0:
             bot.send_message(
                 message.chat.id,
                 "❌ **باڵانسی تۆ سفرە (0 IQD)!**\n"
-                "نەشێی ب ڤی دۆخی ڕێپۆرتان بنێری. تکایە سەرەتا باڵانسا خۆ پڕ بکە لە ڕێکا ئەدمنان.",
+                "ناتوانی بەم دۆخە ڕاپۆرت بنێریت. تکایە سەرەتا باڵانسی خۆت پڕ بکەرەوە لە ڕێگەی ئەدمنەکانەوە.",
                 parse_mode="Markdown"
             )
             return
 
         markup = types.InlineKeyboardMarkup(row_width=1)
         markup.add(
-            types.InlineKeyboardButton("📋 100,000 ڕێپۆرت - 10 هەزار IQD", callback_data="rep_pack_100k"),
-            types.InlineKeyboardButton("📋 1,000,000 ڕێپۆرت - 30 هەزار IQD", callback_data="rep_pack_1m"),
-            types.InlineKeyboardButton("🔥 5,000,000 ڕێپۆرت (تا داخستن / Mega 1B Power) - 100 هەزار IQD", callback_data="rep_pack_5m"),
-            types.InlineKeyboardButton("🔙 گەڕانەوە بۆ پاشەوە", callback_data="back_main")
+            types.InlineKeyboardButton("📋 100 ڕاپۆرت - 10 هەزار IQD", callback_data="rep_pack_100"),
+            types.InlineKeyboardButton("📋 500 ڕاپۆرت - 25 هەزار IQD", callback_data="rep_pack_500"),
+            types.InlineKeyboardButton("📋 1,000 ڕاپۆرت - 40 هەزار IQD", callback_data="rep_pack_1000"),
+            types.InlineKeyboardButton("🔥 ڕاپۆرت تا داخستن (Supreme Mega) - 80 هەزار IQD", callback_data="rep_pack_daxstn"),
+            types.InlineKeyboardButton("🔙 گەڕانەوە بۆ دواوە", callback_data="back_main")
         )
-        bot.send_message(message.chat.id, "⚡ ئێستا پاکێجی ڕێپۆرتا ب هێز هەڵبژێرە:", reply_markup=markup)
+        bot.send_message(message.chat.id, "⚡ ئێستا پاکێجی ڕاپۆرتەکان هەڵبژێرە:", reply_markup=markup)
         
     elif text == "🛒 کڕینی اشتراکی بۆت":
         markup = types.ReplyKeyboardMarkup(resize_keyboard=True, row_width=1)
         markup.add(types.KeyboardButton("🔙 گەڕانەوە"))
         bot.send_message(
             message.chat.id, 
-            "🛒 بۆ کڕینی اشتراکی تایبەت، پەیوەندی بە @YUSEEF_SURCHI یان @B4LLAM بکە.", 
+            "🛒 بۆ کڕینی اشتراکی تایبەتی بۆتەکەی خۆت، پەیوەندی بە @YUSEEF_SURCHI یان @B4LLAM بکە.", 
             reply_markup=markup
         )
 
@@ -196,10 +195,10 @@ def global_message_router(message):
         btn3 = types.KeyboardButton("📢 پەیامی گشتی بۆ هەمووان")
         btn_back = types.KeyboardButton("🔙 گەڕانەوە")
         markup.add(btn1, btn2, btn3, btn_back)
-        bot.send_message(message.chat.id, "🛠 بەخێر هاتیت بۆ پەنێلی تایبەت بە ئەدمنان:", reply_markup=markup)
+        bot.send_message(message.chat.id, "🛠 بەخێر هاتیت بۆ پەنێلی تایبەتی بەڕێوەبەران:", reply_markup=markup)
         
     elif text == "➕ زیادکردنی باڵانس (ئەدمن)" and is_admin(u_id, u_name):
-        msg = bot.send_message(message.chat.id, "🔹 (ID و بڕی پارە) بە ئەم شێوەیە بنێرە بۆ ئەوەی بۆ خەڵکی زیاد بکەیت:\n`USER_ID AMOUNT`\n\nبۆ نموونە:\n`7904656691 5000`", parse_mode="Markdown")
+        msg = bot.send_message(message.chat.id, "🔹 (ئایدی و بڕی پارە) بە ئەم شێوەیە بنێرە بۆ ئەوەی بۆ کەسێک زیاد بکەیت:\n`USER_ID AMOUNT`\n\nبۆ نموونە:\n`7904656691 10000`", parse_mode="Markdown")
         bot.register_next_step_handler(msg, admin_execute_add_balance)
         
     elif text == "📊 ئامارە گشتییەکانی بۆت" and is_admin(u_id, u_name):
@@ -208,16 +207,16 @@ def global_message_router(message):
         total_users = len(DATABASE)
         total_reports = sum([usr['reports_sent'] for usr in DATABASE.values()])
         stats_msg = (
-            f"📊 ئامارە سەرتاسەرییەکان:\n\n"
-            f"👥 ژمارەی بەکارهێنەران: {total_users}\n"
-            f"🚀 گشتی ڕێپۆرتە نێردراوەکان: {total_reports}\n"
+            f"📊 ئامارە گشتییەکانی سیستەم:\n\n"
+            f"👥 کۆی بەکارهێنەران: {total_users}\n"
+            f"🚀 گشتی ڕاپۆرتە نێردراوەکان: {total_reports}\n"
             f"⚙ دۆخی سیستەم: {SYSTEM_METRICS['system_status']}\n"
-            f"⚡ خێرایی لێت: {SYSTEM_METRICS['gateway_latency_ms']}ms"
+            f"⚡ خێرایی په‌یوه‌ندی: {SYSTEM_METRICS['gateway_latency_ms']}ms"
         )
         bot.send_message(message.chat.id, stats_msg, reply_markup=markup)
         
     elif text == "📢 پەیامی گشتی بۆ هەمووان" and is_admin(u_id, u_name):
-        msg = bot.send_message(message.chat.id, "📝 پەیامەکەت بنووسە بۆ ناردن بۆ سەرجەم بەکارهێنەران:")
+        msg = bot.send_message(message.chat.id, "📝 پەیامەکەت بنووسە بۆ ناردن بۆ سەرجەم بەکارهێنەرانی بۆت:")
         bot.register_next_step_handler(msg, admin_execute_broadcast)
 
 def admin_execute_add_balance(message):
@@ -228,13 +227,13 @@ def admin_execute_add_balance(message):
         target_user = get_db_user(target_id)
         target_user['balance'] += amount
         
-        bot.send_message(message.chat.id, f"✅ باڵانس سەرکەوتووانە زیاد کرا بۆ ئایدی: {target_id} بڕی: {amount} IQD")
+        bot.send_message(message.chat.id, f"✅ باڵانس بە سەرکەوتوویی زیاد کرا بۆ ئایدی: {target_id} بڕی: {amount} IQD")
         
         notification_text = (
-            f"🎉 **پیرۆزە! باڵانس بۆ تە هاتیە زێدەکردن**\n\n"
-            f"💰 بڕی باڵانسا هاتیە سەر ڕاقەمێ تە: `{amount} IQD`\n"
-            f"💳 باڵانسا گشتی یا تە ئێستا: `{target_user['balance']} IQD`\n\n"
-            f"⏳ دێ پشتی **20 چرکەیان** ب خۆ ڤەڕەشی ناڤ مێنۆیا سەرەکی..."
+            f"🎉 **پیرۆزە! باڵانس بۆت زیادکرا**\n\n"
+            f"💰 بڕی باڵانسی نوێ کە هاتە سەر هەژمارەکەت: `{amount} IQD`\n"
+            f"💳 کۆی باڵانسی گشتیت ئێستا: `{target_user['balance']} IQD`\n\n"
+            f"⏳ پاش **20 چرکەی تر** بە شێوەی خۆکار دەگەڕێیتەوە بۆ مێنوی سەرەکی..."
         )
         bot.send_message(target_id, notification_text, parse_mode="Markdown")
         
@@ -242,21 +241,21 @@ def admin_execute_add_balance(message):
             time.sleep(20)
             try:
                 markup = types.ReplyKeyboardMarkup(resize_keyboard=True, row_width=2)
-                markup.add("💰 پشکنینی باڵانس", "➕ زیادکردنی باڵانس", "👑 دەستپێکردنی ڕێپۆرت", "👤 پڕۆفایل و زانیاری")
-                bot.send_message(target_id, "🏠 پاشڤە هاتیتە مێنۆیا سەرەکی یا بۆتی:", reply_markup=markup)
+                markup.add("💰 پشکنینی باڵانس", "➕ زیادکردنی باڵانس", "👑 دەستپێکردنی ڕاپۆرت", "👤 پڕۆفایل و باڵانس")
+                bot.send_message(target_id, "🏠 گەڕایتەوە بۆ مێنوی سەرەکی بۆت:", reply_markup=markup)
             except:
                 pass
         threading.Thread(target=delayed_redirect).start()
 
     except Exception as e:
-        bot.send_message(message.chat.id, f"❌ هەڵە لە وەرگرتنی داتاکەدا: {e}\nتکایە دڵنیابە لە ناردنی بەم شێوەیە: `ID AMOUNT`", parse_mode="Markdown")
+        bot.send_message(message.chat.id, f"❌ هەڵە لە وەرگرتنی زانیارییەکاندا: {e}\nتکایە دڵنیابە لە ناردنی بەم شێوەیە: `ID AMOUNT`", parse_mode="Markdown")
 
 def admin_execute_broadcast(message):
     text_content = message.text
     count = 0
     for uid in DATABASE.keys():
         try:
-            bot.send_message(uid, f"📢 پەیامی بەڕێوەبەرایەتی:\n\n{text_content}")
+            bot.send_message(uid, f"📢 پەیامی بەڕێوەبەرایەتی بۆت:\n\n{text_content}")
             count += 1
         except Exception:
             pass
@@ -273,33 +272,33 @@ def callback_query_router(call):
     
     if data == "back_main":
         bot.delete_message(call.message.chat.id, call.message.message_id)
-        bot.answer_callback_query(call.id, "گەڕایەوە.")
+        bot.answer_callback_query(call.id, "گەڕایەوە دواوە.")
         return
         
     if data.startswith("rep_pack_"):
         if user_data['balance'] <= 0:
-            bot.answer_callback_query(call.id, "❌ باڵانس سفرە! نەشێی بەردەوام بی.", show_alert=True)
+            bot.answer_callback_query(call.id, "❌ باڵانس سفرە! ناتوانی بەردەوام بمێنیت.", show_alert=True)
             return
 
         package_code = data.split("_")[2]
         markup = types.InlineKeyboardMarkup(row_width=2)
         markup.add(
-            types.InlineKeyboardButton("🔞 پۆرنۆگرافی", callback_data=f"crime_porn_{package_code}"),
-            types.InlineKeyboardButton("🎮 هاک / چیت", callback_data=f"crime_hack_{package_code}"),
-            types.InlineKeyboardButton("💀 تیرۆرزم", callback_data=f"crime_terror_{package_code}"),
-            types.InlineKeyboardButton("💊 مادەی هۆشبەر", callback_data=f"crime_drugs_{package_code}"),
-            types.InlineKeyboardButton("💰 فێڵکاری و سپام", callback_data=f"crime_scam_{package_code}"),
-            types.InlineKeyboardButton("🔫 چەکی نایاسایی", callback_data=f"crime_weapon_{package_code}"),
-            types.InlineKeyboardButton("🚨 هەڕەشە و تووندوتیژی", callback_data=f"crime_threat_{package_code}"),
-            types.InlineKeyboardButton("🌐 هەموو شتەکی بڵاو دەکاتەوە (Other / General)", callback_data=f"crime_general_{package_code}"),
-            types.InlineKeyboardButton("⚡ هێرشی توند (1B Power)", callback_data=f"crime_god_{package_code}"),
-            types.InlineKeyboardButton("⬅️ پاشوە", callback_data="back_main")
+            types.InlineKeyboardButton("🔞 پۆرنۆگرافی (Pornography)", callback_data=f"crime_porn_{package_code}"),
+            types.InlineKeyboardButton("🎮 هاک / چیت (Hacking)", callback_data=f"crime_hack_{package_code}"),
+            types.InlineKeyboardButton("💀 تیرۆرزم (Terrorism)", callback_data=f"crime_terror_{package_code}"),
+            types.InlineKeyboardButton("💊 مادەی هۆشبەر (Drugs)", callback_data=f"crime_drugs_{package_code}"),
+            types.InlineKeyboardButton("💰 فێڵکاری و سپام (Scam)", callback_data=f"crime_scam_{package_code}"),
+            types.InlineKeyboardButton("🔫 چەکی نایاسایی (Illegal Weapons)", callback_data=f"crime_weapon_{package_code}"),
+            types.InlineKeyboardButton("🚨 هەڕەشە و توندوتیژی (Violence)", callback_data=f"crime_threat_{package_code}"),
+            types.InlineKeyboardButton("🌐 بڵاوکردنەوەی هەموو شتێک (General / Other)", callback_data=f"crime_general_{package_code}"),
+            types.InlineKeyboardButton("⚡ هێرشی توند (Supreme 1B Power)", callback_data=f"crime_god_{package_code}"),
+            types.InlineKeyboardButton("⬅️ گەڕانەوە", callback_data="back_main")
         )
-        bot.answer_callback_query(call.id, "جۆری تاوان هەڵبژێرە:")
+        bot.answer_callback_query(call.id, "جۆری تاوانی ڕاپۆرت هەڵبژێرە:")
         bot.edit_message_text(
             chat_id=call.message.chat.id,
             message_id=call.message.message_id,
-            text="📂 ئەگەر نەزانی چ جۆرە تاوانەکە، دەتوانی بژاردەی **(هەموو شتەکی بڵاو دەکاتەوە)** هەڵبژێری:\n\nئێستا جۆری تاوانەکە دیار بکە:",
+            text="📂 ئێستا جۆری تاوانەکەی (هۆکاری ڕاپۆرتەکە) دیار بکە، بۆ ئەوەی تێکستی تایبەتی ئەو تاوانە لەگەڵ ڕاپۆرتەکاندا بنێردرێت:",
             reply_markup=markup
         )
         
@@ -307,8 +306,8 @@ def callback_query_router(call):
         parts = data.split("_")
         crime_type = parts[1]
         package_code = parts[2]
-        bot.answer_callback_query(call.id, f"تاوان پەسەند کرا: {crime_type}")
-        msg = bot.send_message(call.message.chat.id, "🔗 لینک یان یوزەری کەناڵ/گرووپەکە (URL) بنێرە بۆ ئەوەی هێرشا مەزنا ڕێپۆرتان دەست پێبکات:")
+        bot.answer_callback_query(call.id, f"جۆری تاوان هەڵبژێردرا: {crime_type}")
+        msg = bot.send_message(call.message.chat.id, "🔗 لینک یان یوزەری کەناڵ/گرووپەکە (URL) بنێرە بۆ ئەوەی دەست بە هێرشی توندی ڕاپۆرتەکان بکرێت:")
         bot.register_next_step_handler(msg, execute_supreme_report_sequence, package_code, crime_type)
 
 def execute_supreme_report_sequence(message, package_code, crime_type):
@@ -316,38 +315,55 @@ def execute_supreme_report_sequence(message, package_code, crime_type):
     u_id = message.from_user.id
     user_data = get_db_user(u_id)
     
+    # دیاریکردنا هەژمارا ڕاپۆرتان ل گور پاکێجی هاتیە هەلبژارتن
     count_map = {
-        "100k": 100000,
-        "1m": 1000000,
-        "5m": 5000000
+        "100": 100,
+        "500": 500,
+        "1000": 1000,
+        "daxstn": 5000000  # تا داخستن (ب بڕا مەزن و توند)
     }
-    target_count = count_map.get(package_code, 5000000)
+    target_count = count_map.get(package_code, 100)
     
+    # پێناسەکرنا تێکستی تایبەتی هەر جۆرەکێ تاوانی کو دگەل ڕاپۆرتی بڵاو دبيتەوە
+    crime_texts = {
+        "porn": "[CRIME ALERT: Explicit Adult & Pornographic Content Violation - Immediate Action Required]",
+        "hack": "[SECURITY BREACH: Unauthorized Hacking Tools, Cheats & Malware Distribution Alert]",
+        "terror": "[CRITICAL WARNING: Terrorism, Extremism and Dangerous Organization Propaganda]",
+        "drugs": "[ILLEGAL ACTIVITY: Narcotic Drugs and Controlled Substances Distribution Notice]",
+        "scam": "[FRAUD WARNING: Financial Scam, Phishing and Deceptive Spammer Activities]",
+        "weapon": "[ILLEGAL GOODS: Unlicensed Weapons and Dangerous Materials Trading Alert]",
+        "threat": "[VIOLENCE WARNING: Harassment, Death Threats and Extreme Violence Content]",
+        "general": "[GENERAL POLICY VIOLATION: Spam, Misinformation, Inappropriate Media and Multi-Violation Content]",
+        "god": "[SUPREME FORCE OVERRIDE: Multi-Vector Complete Destruction and Mass Reporting Protocol]"
+    }
+    active_reason_text = crime_texts.get(crime_type, crime_texts["general"])
+
     sent_msg = bot.send_message(
         message.chat.id,
-        f"🚀 **هێرشا مەزنا ڕێپۆرتی (Supreme Power 1B) دەستی پێکرد!**\n\n"
+        f"🚀 **هێرشی ڕاپۆرتکردن دەستی پێکرد!**\n\n"
         f"🎯 ئامانج: `{target_url}`\n"
         f"📌 جۆری تاوان: {crime_type}\n"
-        f"📊 گشتی ڕێپۆرت: 0 / {target_count:,}",
+        f"💬 تێکستی هاوپێچ: `{active_reason_text[:40]}...`\n"
+        f"📊 ڕاپۆرتی نێردراو: 0 / {target_count:,}",
         parse_mode="Markdown"
     )
     
     def background_worker():
         progress = 0
-        step = max(target_count // 20, 5000)
+        step = max(target_count // 20, 10)
         while progress < target_count:
-            send_supreme_telegram_report(target_url, crime_type)
-            time.sleep(0.1)
+            send_supreme_telegram_report(target_url, active_reason_text)
+            time.sleep(0.05)
             progress = min(progress + step, target_count)
             try:
                 bot.edit_message_text(
                     chat_id=message.chat.id,
                     message_id=sent_msg.message_id,
-                    text=f"🚀 **هێرشا ڕێپۆرتان بەردەوامە (تا داخستن)...**\n\n"
+                    text=f"🚀 **پرۆسەی ناردنی ڕاپۆرت بەردەوامە...**\n\n"
                          f"🎯 ئامانج: `{target_url}`\n"
                          f"📌 جۆر: {crime_type}\n"
-                         f"📊 ڕێپۆرتێن نێردراو: {progress:,} / {target_count:,}\n"
-                         f"🔥 دۆخ: هێرشا ب هێز (1B Power) بەردەوامە 🔥",
+                         f"📊 ڕاپۆرتی نێردراو: {progress:,} / {target_count:,}\n"
+                         f"🔥 دۆخ: لەکارخستن و ڕووخاندنی ئامانج بەڕێوەیە 🔥",
                     parse_mode="Markdown"
                 )
             except Exception:
@@ -356,8 +372,8 @@ def execute_supreme_report_sequence(message, package_code, crime_type):
         user_data['reports_sent'] += target_count
         bot.send_message(
             message.chat.id, 
-            f"✅ **پیرۆزە! هێرش تەمام بوو.**\n"
-            f"🎯 ئامانج ب سەرکەوتوویی بڕی `{target_count:,}` ڕێپۆرتا هاتە لێدان و هاتیە داخستن."
+            f"✅ **پیرۆزە! پرۆسەکە بە سەرکەوتوویی کۆتایی هات.**\n"
+            f"🎯 ئامانجی مەبەست بڕی `{target_count:,}` ڕاپۆرتی توندی پێگەیشت و داخستن سەرکەوتووانە جێبەجێ کرا."
         )
 
     threading.Thread(target=background_worker).start()
