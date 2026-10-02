@@ -2,15 +2,14 @@ import os
 import telebot
 from telebot.types import InlineKeyboardButton, InlineKeyboardMarkup
 
-# وەرگرتنا توکنی بۆتی ژ ژینگەها سێرڤەری (Railway Variables)
-TOKEN = os.getenv("BOT_TOKEN")
-if not TOKEN:
-  raise ValueError("8868899334:AAFcfBbSYHDA5_r4iGO3rTycTNaH_yqQPOo")
-
+# دانانی ڕاستەوخۆی تۆکنەکە بۆ ئەوەی هەرگیز کێشەی (ValueError) دروست نەبێت[span_1](start_span)[span_1](end_span)
+TOKEN = os.getenv(
+    "BOT_TOKEN", "8868899334:AAFcfBbSYHDA5_r4iGO3rTycTNaH_yqQPOo"
+)
 bot = telebot.TeleBot(TOKEN)
 
-# ناوی کەناڵ و بەستەری کەناڵ بۆ پشکنینی پشتگیری (Force Subscribe)
-CHANNEL_USERNAME = "@Tikinfo_krd"  # یان ئایدی/یۆزەری کەناڵەکەت
+# ناوی کەناڵ و بەستەری کەناڵ بۆ پشکنینی ئەندامبوون (Force Subscribe)
+CHANNEL_USERNAME = "@Tikinfo_krd"
 CHANNEL_LINK = "https://t.me/Tikinfo_krd"
 
 # دیارکرنا خاوەنێن بۆتی
@@ -21,13 +20,11 @@ OWNERS = ["@YUSEEF_SURCHI", "@B4llam"]
 def check_user_subscription(user_id):
   try:
     member = bot.get_chat_member(CHANNEL_USERNAME, user_id)
-    # ئەگەر بەکارهێنەر لە کەناڵدا بێت یان بەڕێوەبەر بێت
     if member.status in ["member", "administrator", "creator"]:
       return True
     return False
   except Exception as e:
     print(f"Error checking subscription: {e}")
-    # ئەگەر کێشەیەک هەبوو لە پشکنینەکەدا، دەتوانین ڕێگە بدەین یان بلۆکی بکەین (لێرە بۆ پارێزراوی True دانراوە یان دەتوانرێت بگەڕێتەوە)
     return True
 
 
@@ -36,9 +33,7 @@ def check_user_subscription(user_id):
 def send_welcome(message):
   user_id = message.from_user.id
 
-  # پشکنینا پشتگیرییا کەناڵی
   if not check_user_subscription(user_id):
-    # ئەگەر Join نەبوو، کیبۆردەکەی بۆ دروست دەکەین بۆ داوای Join کردن
     markup = InlineKeyboardMarkup()
     markup.add(
         InlineKeyboardButton("📢 بەشداریکردن لە کەناڵ (Join)", url=CHANNEL_LINK)
@@ -48,7 +43,7 @@ def send_welcome(message):
     )
 
     not_joined_text = (
-        "⚠️ **بۆرای بەکارئینانی بۆتەکە، سەرەتا دەبیت لە کەناڵەکەمان ئەندام"
+        "⚠️ **بۆ بەکارئینانی بۆتەکە، سەرەتا دەبیت لە کەناڵەکەمان ئەندام"
         " ببیت!**\n\nتکایە سەرەتا سەردانی کەناڵی خوارەوە بکە و Join بە، پاشان"
         " کلیک لە دوگمەی پشکنین بکە 👇\n\n🔗 " + CHANNEL_LINK
     )
@@ -60,7 +55,6 @@ def send_welcome(message):
     )
     return
 
-  # ئەگەر Join بوو، پەیامی سەرەکی نیشان دەدەین
   show_main_menu(message.chat.id)
 
 
@@ -101,7 +95,7 @@ def show_main_menu(chat_id):
       "• 🌐 دۆزینەوەی حساپە قەدەغەکراوەکان (محظور)\n"
       "• 🙂 زانینی وەڵاتی ڕاستەقینە + شوێنی ئێستای حساپ (ئەگەر VPN بەکاربێنێت)\n"
       "• 🎵 زانینی ئایا حساپەکە مۆسیقییە یان نە\n"
-      "• ▶️️ یوتوب و اینستاگرام و ستۆرییەکان\n\n"
+      "• ▶️ یوتوب و اینستاگرام و ستۆرییەکان\n\n"
       "✅ ئێستا یۆزەر، ئایدی، یان لینکێ ڤیدیۆ/لایڤ بنێرە بۆ وەرگرتنی زانیارییان! 📊"
   )
 
@@ -122,7 +116,6 @@ def callback_handler(call):
           "🎉 پیرۆزە! ئێستا دەتوانیت بۆتەکە بەکاربێنیت.",
           show_alert=True,
       )
-      # سڕینەوەی پەیامی داوای بەشداریکردن و نیشاندانی مێنوی سەرەکی
       try:
         bot.delete_message(call.message.chat.id, call.message.message_id)
       except:
@@ -155,12 +148,11 @@ def callback_handler(call):
     bot.send_message(call.message.chat.id, adv_text, parse_mode="Markdown")
 
 
-# وەرگرتنا یۆزەر یان لینک ژ بەکارهێنەری و پشکنینی ئەندامبوون
+# وەرگرتنا یۆزەر یان لینک ژ بەکارهێنەری
 @bot.message_handler(func=lambda message: True)
 def get_tiktok_data(message):
   user_id = message.from_user.id
 
-  # پێش وەرگرتنی هەر داواکارییەک، پشکنین دەکەین کە ئایا لە کەناڵ هەیە یان نا
   if not check_user_subscription(user_id):
     markup = InlineKeyboardMarkup()
     markup.add(
@@ -187,7 +179,6 @@ def get_tiktok_data(message):
       parse_mode="Markdown",
   )
 
-  # لێرەدا دەتوانیت API یان سکریپتی تایبەتی خۆت دابنێیت
   result_text = (
       f"✅ **ئەنجامی پشکنین بۆ:** `{user_input}`\n\n"
       "🔹 **ناوی حساپ:** (نموونە)\n"
@@ -207,7 +198,7 @@ def get_tiktok_data(message):
   )
 
 
-# دەستپێکرنا بۆتی بە شێوەیەکی بەردەوام
+# دەستپێکرنا بۆتی
 if __name__ == "__main__":
-  print("Bot with Force Subscribe is running successfully...")
+  print("Bot is running successfully...")
   bot.infinity_polling(skip_pending=True)
