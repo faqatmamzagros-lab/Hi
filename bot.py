@@ -100,7 +100,6 @@ async def handle_tiktok_query(
     response = requests.get(url, headers=headers, params=querystring)
     data = response.json()
 
-    # دەرهێنانی زانیارییەکان لە JSON
     user_info = data.get("userInfo", {})
     user_detail = user_info.get("user", {})
     stats = user_info.get("stats", {})
@@ -120,7 +119,6 @@ async def handle_tiktok_query(
     videos = stats.get("videoCount", 0)
     friends = stats.get("friendCount", 0)
 
-    # پەیامی کۆتایی بە هەموو زانیارییە فراوانەکانەوە
     result_text = (
         f"📊 **سەرجەم زانیارییەکانی هەژماری تیکتۆک:**\n\n"
         f"🔹 **ناوی هەژمار:** {nickname}\n"
@@ -150,7 +148,7 @@ async def handle_tiktok_query(
 
 
 def main():
-  # تۆکنی بۆتەکەت لێرە دابنە (یاخود لە Railway Environment Variables)
+  # تۆکنی ڕاستەقینەی بۆتەکەت لێرە دابنە (یاخود لە Environment Variablesـی Railway)
   TOKEN = "8868899334:AAGsbrI61_s7hasbA-dvoUD54JZ31dHd6mI"
 
   app = ApplicationBuilder().token(TOKEN).build()
