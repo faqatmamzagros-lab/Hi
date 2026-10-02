@@ -1,6 +1,5 @@
 # =====================================================================
-# ULTIMATE INFINITE OMEGA SINGULARITY PRIME - V1,000,000,000,000
-# 100-SYSTEM QUANTUM MATRIX & BILLION-LINE SHARDING ENGINE
+# ULTIMATE INFINITE OMEGA PRIME - CLEAN EDITION (NO COUPONS)
 # =====================================================================
 import os
 import sys
@@ -15,14 +14,14 @@ from telebot import types
 from concurrent.futures import ThreadPoolExecutor, as_completed
 
 logging.basicConfig(
-    format='[%(asctime)s] [%(levelname)s] [OMEGA-PRIME-V1T]: %(message)s',
+    format='[%(asctime)s] [%(levelname)s] [OMEGA-PRIME-CLEAN]: %(message)s',
     level=logging.INFO,
     handlers=[
-        logging.FileHandler("omega_prime_billion_matrix.log", encoding='utf-8'),
+        logging.FileHandler("omega_prime_clean.log", encoding='utf-8'),
         logging.StreamHandler(sys.stdout)
     ]
 )
-logger = logging.getLogger("OmegaPrimeBillionMatrix")
+logger = logging.getLogger("OmegaPrimeClean")
 
 PRIMARY_TOKEN = '8887162311:AAEBNX4ewNX-__HI-659aiyLffnJHliV_qc'
 bot = telebot.TeleBot(PRIMARY_TOKEN, parse_mode=None)
@@ -31,7 +30,6 @@ ADMIN_IDS = [7904656691, 7643191802]
 ADMIN_USERNAMES = ["YUSEEF_SURCHI", "B4LLAM"]
 
 DB_FILE = "omega_prime_db.json"
-COUPONS_FILE = "omega_prime_coupons.json"
 CLUSTER_NODES_FILE = "omega_prime_cluster.json"
 STATS_HISTORY_FILE = "omega_prime_stats.json"
 
@@ -56,12 +54,10 @@ def save_omega_json(file_path, data):
             logger.error(f"Failed to save {file_path}: {e}")
 
 DATABASE = load_omega_json(DB_FILE, {})
-COUPONS_DB = load_omega_json(COUPONS_FILE, {})
-CLUSTER_NODES = load_omega_json(CLUSTER_NODES_FILE, {"servers": [], "bot_tokens": [], "proxies": [], "gateways": [], "billion_shards": []})
-STATS_HISTORY = load_omega_json(STATS_HISTORY_FILE, {"total_omega_dispatches": 0, "active_cores": 100, "billion_line_virtual_index": 999999999999})
+CLUSTER_NODES = load_omega_json(CLUSTER_NODES_FILE, {"servers": [], "bot_tokens": [], "proxies": [], "gateways": []})
+STATS_HISTORY = load_omega_json(STATS_HISTORY_FILE, {"total_omega_dispatches": 0, "active_cores": 100})
 
 def save_db(): save_omega_json(DB_FILE, DATABASE)
-def save_coupons(): save_omega_json(COUPONS_FILE, COUPONS_DB)
 def save_cluster(): save_omega_json(CLUSTER_NODES_FILE, CLUSTER_NODES)
 def save_stats(): save_omega_json(STATS_HISTORY_FILE, STATS_HISTORY)
 
@@ -81,7 +77,7 @@ def get_omega_user(user_id, username="Unknown", first_name="User"):
                 "username": username,
                 "nickname": first_name,
                 "joined_date": time.time(),
-                "subscription": "Omega Prime 100-System Billion-Line Matrix"
+                "subscription": "Omega Prime Clean Matrix"
             }
             save_db()
         else:
@@ -90,7 +86,7 @@ def get_omega_user(user_id, username="Unknown", first_name="User"):
         return DATABASE[u_id_str]
 
 # ---------------------------------------------------------------------
-# 100-SYSTEM QUANTUM MATRIX & BILLION-LINE DISPATCH ENGINE
+# DISPATCH ENGINE
 # ---------------------------------------------------------------------
 def dispatch_omega_prime_request(target_url, payload_text, bot_token=None, server_node=None, proxy_item=None, gateway_node=None):
     clean_target = target_url.replace("https://t.me/", "").replace("@", "").strip()
@@ -104,13 +100,13 @@ def dispatch_omega_prime_request(target_url, payload_text, bot_token=None, serve
     omega_user_agents = [
         "Mozilla/5.0 (iPhone; CPU iPhone OS 26_0 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/26.0 Mobile/15E148",
         "Mozilla/5.0 (Windows NT 16.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/148.0.0.0 Safari/537.36",
-        "OmegaPrime-BillionMatrix/1000.0 (100-Quantum-Systems-Active)"
+        "OmegaPrime-CleanMatrix/1000.0"
     ]
     
     headers = {
         "User-Agent": random.choice(omega_user_agents),
         "X-Omega-Prime-Payload": payload_text,
-        "X-Omega-Billion-Signature": f"BillionMatrixV1T-{random.randint(100000000000000, 999999999999999)}"
+        "X-Omega-Signature": f"CleanV1-{random.randint(100000000000000, 999999999999999)}"
     }
     
     proxies = {"http": proxy_item, "https": proxy_item} if proxy_item else None
@@ -177,7 +173,7 @@ def execute_omega_prime_mesh_attack(target_url, reason_text, total_count, progre
     return success_count
 
 # ---------------------------------------------------------------------
-# TELEGRAM BOT INTERFACE (100-SYSTEM PRIME EDITION)
+# TELEGRAM BOT INTERFACE (CLEAN EDITION)
 # ---------------------------------------------------------------------
 @bot.message_handler(commands=['start'])
 def command_start(message):
@@ -193,25 +189,22 @@ def command_start(message):
     gateway_count = len(CLUSTER_NODES.get("gateways", []))
     
     welcome_text = (
-        f"🌌 **سڵاو {u_first} بەڕێز، بەخێر هاتیت بۆ لوتکەی گەردوونیی ئۆمێگا پرایم (100-System Billion-Line Matrix)!**\n\n"
-        f"⚡ ئەمە زەبەلاحترین سیستەمی کۆدی جیهانە کە خاوەنی ۱۰۰ تایبەتمەندی جیاواز و ماتریکسی بلیۆن ڕیزییە!\n\n"
-        f"💎 **پێکهاتەی ۱۰۰ سیستەمی کوانتۆمی:**\n"
+        f"🌌 **سڵاو {u_first} بەڕێز، بەخێر هاتیت بۆ سیستەمی پاککراوەی پرایم!**\n\n"
+        f"⚡ ئەمەش ڤێرژنی خاوێن و بێگەرد بێ بەشی کۆدی دیاری:\n\n"
         f"🤖 بۆتە بەستراوەکان: `{bot_count}` بۆت\n"
         f"🌐 سەوەرەکان: `{server_count}` سەوەر\n"
         f"🛡 پرۆکسییەکان: `{proxy_count}` پرۆکسی\n"
-        f"⚡ گەیتوێیەکان: `{gateway_count}` گەیتوێ\n"
-        f"🚀 ژمارەی ماتریکسی ڕیزەکان: `999,999,999,999` ڕیز\n\n"
+        f"⚡ گەیتوێیەکان: `{gateway_count}` گەیتوێ\n\n"
         f"💬 فەرموو یەکێک لە بژاردەکانی خوارەوە هەڵبژێرە:"
     )
     
     markup = types.ReplyKeyboardMarkup(resize_keyboard=True, row_width=2)
     btn_balance = types.KeyboardButton("💰 پشکنینی باڵانس")
     btn_add_bal = types.KeyboardButton("➕ زیادکردنی باڵانس")
-    btn_coupon = types.KeyboardButton("🎁 کۆدی دیاری (Coupon)")
     btn_report = types.KeyboardButton("🌌 دەستپێکردنی هێرشی پرایم (Prime)")
     btn_profile = types.KeyboardButton("👤 پڕۆفایل و باڵانس")
     
-    markup.add(btn_balance, btn_add_bal, btn_coupon, btn_report, btn_profile)
+    markup.add(btn_balance, btn_add_bal, btn_report, btn_profile)
     
     if is_admin(u_id, user.username):
         btn_admin = types.KeyboardButton("🛠 پەنێلی دەسەڵاتی باڵا (پرایم)")
@@ -235,10 +228,10 @@ def omega_prime_global_router(message):
         markup = types.ReplyKeyboardMarkup(resize_keyboard=True, row_width=1)
         markup.add(types.KeyboardButton("🔙 گەڕانەوە"))
         msg_text = (
-            f"💎 **بارودۆخی باڵانسی ئۆمێگا پرایم:**\n\n"
+            f"💎 **بارودۆخی باڵانسی پرایم:**\n\n"
             f"🔹 بڕی پارە: `{user_data['balance']:,}` IQD\n"
             f"📦 هێرشە سەرکەوتووەکان: `{user_data['reports_sent']:,}`\n"
-            f"⭐ دۆخی هەژمار: {'⚠️ باڵانست سفرە' if user_data['balance'] <= 0 else '🟢 چالاک و خاوەن ۱۰۰ سیستەمی بێوێنە'}"
+            f"⭐ دۆخی هەژمار: {'⚠️ باڵانست سفرە' if user_data['balance'] <= 0 else '🟢 چالاک و ئامادە'}"
         )
         bot.send_message(message.chat.id, msg_text, reply_markup=markup, parse_mode="Markdown")
         
@@ -252,25 +245,18 @@ def omega_prime_global_router(message):
         )
         bot.send_message(message.chat.id, add_text, reply_markup=markup, parse_mode="Markdown")
 
-    elif text == "🎁 کۆدی دیاری (Coupon)":
-        markup = types.ReplyKeyboardMarkup(resize_keyboard=True, row_width=1)
-        markup.add(types.KeyboardButton("🔙 گەڕانەوە"))
-        msg = bot.send_message(message.chat.id, "🎁 **تکایە کۆدی دیاریی خۆت بنووسە بۆ وەرگرتنی باڵانس:**", reply_markup=markup, parse_mode="Markdown")
-        bot.register_next_step_handler(msg, process_omega_prime_coupon)
-        
     elif text == "👤 پڕۆفایل و باڵانس":
         markup = types.ReplyKeyboardMarkup(resize_keyboard=True, row_width=1)
         markup.add(types.KeyboardButton("🔙 گەڕانەوە"))
         
         profile_text = (
-            f"👤 **ناسنامەی پڕۆفایلی پرایم (Omega Prime Profile):**\n\n"
+            f"👤 **پڕۆفایلی پرایم:**\n\n"
             f"📛 ناوی پڕۆفایل: `{u_first}`\n"
             f"🆔 ئایدی پڕۆفایل: `{u_id}`\n"
-            f"🔗 یۆزەرتایبەت: `@{u_name}`\n"
+            f"🔗 یۆزەر: `@{u_name}`\n"
             f"💰 باڵانسی ئێستات: `{user_data['balance']:,}` IQD\n"
             f"📦 گشتی هێرشەکان: `{user_data['reports_sent']:,}`\n"
-            f"🛡 سیستەم: `Omega Prime Billion-Line Matrix`\n"
-            f"👑 ڕوتبە: {'سەرکردەی باڵا / ئەدمن' if is_admin(u_id, user.username) else 'بەکارهێنەری هێزی پرایم'}"
+            f"👑 ڕوتبە: {'سەرکردەی باڵا / ئەدمن' if is_admin(u_id, user.username) else 'بەکارهێنەر'}"
         )
         bot.send_message(message.chat.id, profile_text, reply_markup=markup, parse_mode="Markdown")
         
@@ -279,58 +265,53 @@ def omega_prime_global_router(message):
             bot.send_message(
                 message.chat.id,
                 "❌ **باڵانسی تۆ سفرە (0 IQD)!**\n"
-                "ناتوانی بەم دۆخە هێرش ئەنجام بدەیت. سەرەتا باڵانس پڕ بکەرەوە یان کۆدی دیاری بەکاربینە.",
+                "ناتوانی بەم دۆخە هێرش ئەنجام بدەیت. سەرەتا باڵانس پڕ بکەرەوە.",
                 parse_mode="Markdown"
             )
             return
 
         markup = types.InlineKeyboardMarkup(row_width=1)
         markup.add(
-            types.InlineKeyboardButton("📋 500,000 هێرش (Prime Core Micro) - 25 هەزار IQD", callback_data="ppack_500000"),
-            types.InlineKeyboardButton("📋 2,000,000 هێرش (Prime Quantum Cluster) - 60 هەزار IQD", callback_data="ppack_2000000"),
-            types.InlineKeyboardButton("📋 20,000,000 هێرش (Prime Billion Shard) - 150 هەزار IQD", callback_data="ppack_20000000"),
-            types.InlineKeyboardButton("🔥 هێرشی ۱,۰۰۰,۰۰۰,۰۰۰,۰۰۰ بلیۆن ڕیزی پرایم - 1 ملیۆن IQD", callback_data="ppack_1000000000000"),
+            types.InlineKeyboardButton("📋 500,000 هێرش - 25 هەزار IQD", callback_data="ppack_500000"),
+            types.InlineKeyboardButton("📋 2,000,000 هێرش - 60 هەزار IQD", callback_data="ppack_2000000"),
+            types.InlineKeyboardButton("📋 20,000,000 هێرش - 150 هەزار IQD", callback_data="ppack_20000000"),
+            types.InlineKeyboardButton("🔥 هێرشی ۱,۰۰۰,۰۰۰,۰۰۰,۰۰۰ بلیۆن ڕیزی - 1 ملیۆن IQD", callback_data="ppack_1000000000000"),
             types.InlineKeyboardButton("🔙 گەڕانەوە بۆ دواوە", callback_data="pback_main")
         )
-        bot.send_message(message.chat.id, "⚡ **پاوەرو پاکێجی هێرشی پرایم (۱۰۰ سیستەم) هەڵبژێرە:**", reply_markup=markup, parse_mode="Markdown")
+        bot.send_message(message.chat.id, "⚡ **پاکێجی هێرش هەڵبژێرە:**", reply_markup=markup, parse_mode="Markdown")
 
     elif text == "🛠 پەنێلی دەسەڵاتی باڵا (پرایم)" and is_admin(u_id, u_name):
         markup = types.ReplyKeyboardMarkup(resize_keyboard=True, row_width=2)
         btn1 = types.KeyboardButton("➕ زیادکردنی باڵانس (ئەدمن)")
-        btn2 = types.KeyboardButton("🎁 دروستکردنی کۆدی دیاری")
-        btn3 = types.KeyboardButton("🤖 بەستنەوەی بۆتی نوێ (Bot Token)")
-        btn4 = types.KeyboardButton("🌐 بەستنەوەی سەوەر (Server Node)")
-        btn5 = types.KeyboardButton("🛡 زیادکردنی پرۆکسی (Proxy)")
-        btn6 = types.KeyboardButton("⚡ زیادکردنی گەیتوێ (Gateway)")
-        btn7 = types.KeyboardButton("👥 لیستەی بەکارهێنەران و باڵانس")
-        btn8 = types.KeyboardButton("📊 ئامارە گشتییەکانی سیستەم")
-        btn9 = types.KeyboardButton("📢 پەیامی گشتی بۆ هەمووان")
+        btn2 = types.KeyboardButton("🤖 بەستنەوەی بۆتی نوێ (Bot Token)")
+        btn3 = types.KeyboardButton("🌐 بەستنەوەی سەوەر (Server Node)")
+        btn4 = types.KeyboardButton("🛡 زیادکردنی پرۆکسی (Proxy)")
+        btn5 = types.KeyboardButton("⚡ زیادکردنی گەیتوێ (Gateway)")
+        btn6 = types.KeyboardButton("👥 لیستەی بەکارهێنەران و باڵانس")
+        btn7 = types.KeyboardButton("📊 ئامارە گشتییەکانی سیستەم")
+        btn8 = types.KeyboardButton("📢 پەیامی گشتی بۆ هەمووان")
         btn_back = types.KeyboardButton("🔙 گەڕانەوە")
-        markup.add(btn1, btn2, btn3, btn4, btn5, btn6, btn7, btn8, btn9, btn_back)
-        bot.send_message(message.chat.id, "🛠 **بەخێر هاتیت بۆ پەنێلی باڵای ئۆمێگا پرایم (۱۰۰ سیستەم):**", reply_markup=markup, parse_mode="Markdown")
+        markup.add(btn1, btn2, btn3, btn4, btn5, btn6, btn7, btn8, btn_back)
+        bot.send_message(message.chat.id, "🛠 **پەنێلی باڵای پرایم (Clean):**", reply_markup=markup, parse_mode="Markdown")
         
     elif text == "➕ زیادکردنی باڵانس (ئەدمن)" and is_admin(u_id, u_name):
-        msg = bot.send_message(message.chat.id, "🔹 **(ئایدی و بڕی پارە) بنێرە:**\n`USER_ID AMOUNT`\n\nبۆ نموونە:\n`7904656691 50000`", parse_mode="Markdown")
+        msg = bot.send_message(message.chat.id, "🔹 **(ئایدی و بڕی پارە) بنێرە:**\n`USER_ID AMOUNT`", parse_mode="Markdown")
         bot.register_next_step_handler(msg, admin_prime_add_balance)
 
-    elif text == "🎁 دروستکردنی کۆدی دیاری" and is_admin(u_id, u_name):
-        msg = bot.send_message(message.chat.id, "🎁 **کۆد و بڕی پارە بەم شێوەیە بنێرە:**\n`COUPON_NAME AMOUNT`\n\nبۆ نموونە:\n`PRIME2026 100000`", parse_mode="Markdown")
-        bot.register_next_step_handler(msg, admin_prime_create_coupon)
-
     elif text == "🤖 بەستنەوەی بۆتی نوێ (Bot Token)" and is_admin(u_id, u_name):
-        msg = bot.send_message(message.chat.id, "🤖 **تۆکنی بۆتی نوێ بنێرە بۆ خستنە ناو ماتریکسی پرایمەوە:**\n\nنموونە:\n`123456789:ABCdefGhIJKlmNoPQRsTUVwxyZ`", parse_mode="Markdown")
+        msg = bot.send_message(message.chat.id, "🤖 **تۆکنی بۆتی نوێ بنێرە:**", parse_mode="Markdown")
         bot.register_next_step_handler(msg, admin_prime_add_bot_token)
 
     elif text == "🌐 بەستنەوەی سەوەر (Server Node)" and is_admin(u_id, u_name):
-        msg = bot.send_message(message.chat.id, "🌐 **ناونیشانی سەوەرە نوێیەکە (API URL) بنێرە:**\n\nنموونە:\n`https://prime-node-2.railway.app`", parse_mode="Markdown")
+        msg = bot.send_message(message.chat.id, "🌐 **لینکێکی دروستی سەوەر بنێرە:**", parse_mode="Markdown")
         bot.register_next_step_handler(msg, admin_prime_add_server_node)
 
     elif text == "🛡 زیادکردنی پرۆکسی (Proxy)" and is_admin(u_id, u_name):
-        msg = bot.send_message(message.chat.id, "🛡 **پرۆکسی نوێ بە شێوازی IP:PORT بنێرە:**\n\nنموونە:\n`http://192.168.1.100:8080`", parse_mode="Markdown")
+        msg = bot.send_message(message.chat.id, "🛡 **پرۆکسی بە شێوازی http://IP:PORT بنێرە:**", parse_mode="Markdown")
         bot.register_next_step_handler(msg, admin_prime_add_proxy)
 
     elif text == "⚡ زیادکردنی گەیتوێ (Gateway)" and is_admin(u_id, u_name):
-        msg = bot.send_message(message.chat.id, "⚡ **گەیتوێی نوێ (Gateway URL) بنێرە:**\n\nنموونە:\n`https://gateway-prime.railway.app`", parse_mode="Markdown")
+        msg = bot.send_message(message.chat.id, "⚡ **گەیتوێی نوێ بنێرە:**", parse_mode="Markdown")
         bot.register_next_step_handler(msg, admin_prime_add_gateway)
 
     elif text == "👥 لیستەی بەکارهێنەران و باڵانس" and is_admin(u_id, u_name):
@@ -338,16 +319,16 @@ def omega_prime_global_router(message):
         markup.add(types.KeyboardButton("🔙 گەڕانەوە"))
         
         if not DATABASE:
-            bot.send_message(message.chat.id, "📭 هیچ بەکارهێنەرێک تۆمار نەکراوە لە داتابەیسدا.", reply_markup=markup)
+            bot.send_message(message.chat.id, "📭 هیچ بەکارهێنەرێک تۆمار نەکراوە.", reply_markup=markup)
             return
 
-        report_lines = ["👥 **لیستەی سەرجەم بەکارهێنەرانی پرایم (100 Systems):**\n"]
+        report_lines = ["👥 **لیستەی بەکارهێنەران:**\n"]
         for uid, info in DATABASE.items():
             nickname = info.get('nickname', 'User')
             username = info.get('username', 'N/A')
             balance = info.get('balance', 0)
             reports = info.get('reports_sent', 0)
-            line = f"🆔 ئایدی: `{uid}`\n👤 ناڤ: `{nickname}` (@{username})\n💰 باڵانس: `{balance:,} IQD` | 🚀 هێرش: `{reports}`\n-----------------------------------"
+            line = f"🆔 ئایدی: `{uid}` | 👤 @{username}\n💰 باڵانس: `{balance:,} IQD` | 🚀 هێرش: `{reports}`\n-----------------------------------"
             report_lines.append(line)
         
         chunk = ""
@@ -370,53 +351,17 @@ def omega_prime_global_router(message):
         gateway_count = len(CLUSTER_NODES.get("gateways", []))
         global_dispatches = STATS_HISTORY.get("total_omega_dispatches", 0)
         stats_msg = (
-            f"📊 **ئامارە فەرمییەکانی ئۆمێگا پرایم:**\n\n"
-            f"👥 کۆی بەکارهێنەران: `{total_users}`\n"
-            f"🚀 گشتی دیسپاچی پرایم: `{global_dispatches:,}`\n"
-            f"🤖 بۆتە بەستراوەکان: `{bot_count}`\n"
-            f"🌐 سەوەرەکان: `{server_count}`\n"
-            f"🛡 پرۆکسییەکان: `{proxy_count}`\n"
-            f"⚡ گەیتوێکان: `{gateway_count}`\n"
-            f"🎁 کۆدی دیاریی چالاک: `{len(COUPONS_DB)}`\n"
-            f"⚙ ۱۰۰ سیستەمی کوانتۆمی: 🟢 ONLINE (Billion-Line Matrix Active)"
+            f"📊 **ئاماری گشتی:**\n\n"
+            f"👥 بەکارهێنەران: `{total_users}`\n"
+            f"🚀 گشتی دیسپاچ: `{global_dispatches:,}`\n"
+            f"🤖 بۆتەکان: `{bot_count}` | 🌐 سەوەرەکان: `{server_count}`\n"
+            f"🛡 پرۆکسییەکان: `{proxy_count}` | ⚡ گەیتوێکان: `{gateway_count}`"
         )
         bot.send_message(message.chat.id, stats_msg, reply_markup=markup, parse_mode="Markdown")
         
     elif text == "📢 پەیامی گشتی بۆ هەمووان" and is_admin(u_id, u_name):
-        msg = bot.send_message(message.chat.id, "📝 **پەیامەکەت بنووسە بۆ ناردن بۆ سەرجەم بەکارهێنەران:**", parse_mode="Markdown")
+        msg = bot.send_message(message.chat.id, "📝 **پەیامەکەت بنووسە بۆ ناردن بۆ هەمووان:**", parse_mode="Markdown")
         bot.register_next_step_handler(msg, admin_prime_broadcast)
-
-def process_omega_prime_coupon(message):
-    code = message.text.strip()
-    user_data = get_omega_user(message.from_user.id)
-    
-    if code in COUPONS_DB:
-        if COUPONS_DB[code]["used"]:
-            bot.send_message(message.chat.id, "❌ ئەم کۆدی دیارییە پێشتر بەکارهاتووە!")
-            return
-            
-        amount = COUPONS_DB[code]["amount"]
-        user_data["balance"] += amount
-        COUPONS_DB[code]["used"] = True
-        save_coupons()
-        save_db()
-        
-        bot.send_message(message.chat.id, f"🎉 پیرۆزە! کۆد بە سەرکەوتوویی قبوڵ کرا و بڕی `{amount:,} IQD` بۆ باڵانست زیاد بوو.", parse_mode="Markdown")
-    else:
-        bot.send_message(message.chat.id, "❌ کۆدەکە هەڵەیە یان بوونی نییە!")
-
-def admin_prime_create_coupon(message):
-    try:
-        parts = message.text.split()
-        code = parts[0]
-        amount = int(parts[1])
-        
-        COUPONS_DB[code] = {"amount": amount, "used": False}
-        save_coupons()
-        
-        bot.send_message(message.chat.id, f"✅ کۆدی دیاریی `{code}` بە بڕی `{amount:,} IQD` بە سەرکەوتوویی دروست کرا!", parse_mode="Markdown")
-    except Exception as e:
-        bot.send_message(message.chat.id, f"❌ هەڵە دروستکردنی کۆدەکەدا: {e}")
 
 def admin_prime_add_bot_token(message):
     try:
@@ -424,14 +369,12 @@ def admin_prime_add_bot_token(message):
         if ":" not in token:
             bot.send_message(message.chat.id, "❌ تکایە تۆکنێکی دروست بنێرە.")
             return
-            
         if token not in CLUSTER_NODES["bot_tokens"]:
             CLUSTER_NODES["bot_tokens"].append(token)
             save_cluster()
-            total_bots = len(CLUSTER_NODES["bot_tokens"]) + 1
-            bot.send_message(message.chat.id, f"✅ بۆتەکە بە سەرکەوتوویی خرایە ناو ماتریکسی پرایمەوە!\n🤖 کۆی بۆتەکان: `{total_bots}`", parse_mode="Markdown")
+            bot.send_message(message.chat.id, "✅ بۆتەکە سەرکەوتووانە زیاد کرا!", parse_mode="Markdown")
         else:
-            bot.send_message(message.chat.id, "⚠️ ئەم تۆکنە پێشتر لە تۆڕەکەدا هەیە.")
+            bot.send_message(message.chat.id, "⚠️ ئەم تۆکنە پێشتر هەیە.")
     except Exception as e:
         bot.send_message(message.chat.id, f"❌ هەڵە: {e}")
 
@@ -439,16 +382,14 @@ def admin_prime_add_server_node(message):
     try:
         server_url = message.text.strip()
         if "http" not in server_url:
-            bot.send_message(message.chat.id, "❌ تکایە لینکێکی دروستی سەوەر بنێرە.")
+            bot.send_message(message.chat.id, "❌ تکایە لینکێکی دروست بنێرە.")
             return
-            
         if server_url not in CLUSTER_NODES["servers"]:
             CLUSTER_NODES["servers"].append(server_url)
             save_cluster()
-            total_servers = len(CLUSTER_NODES["servers"]) + 1
-            bot.send_message(message.chat.id, f"✅ سەوەری نوێ بە سەرکەوتوویی بەستراوەوە!\n🌐 کۆی سەوەرەکان: `{total_servers}`", parse_mode="Markdown")
+            bot.send_message(message.chat.id, "✅ سەوەر سەرکەوتووانە زیاد کرا!", parse_mode="Markdown")
         else:
-            bot.send_message(message.chat.id, "⚠️ ئەم سەوەرە پێشتر لە کلاستەردا هەیە.")
+            bot.send_message(message.chat.id, "⚠️ ئەم سەوەرە پێشتر هەیە.")
     except Exception as e:
         bot.send_message(message.chat.id, f"❌ هەڵە: {e}")
 
@@ -458,14 +399,12 @@ def admin_prime_add_proxy(message):
         if "http" not in proxy_val:
             bot.send_message(message.chat.id, "❌ تکایە پرۆکسییەکی دروست بنێرە.")
             return
-            
         if proxy_val not in CLUSTER_NODES["proxies"]:
             CLUSTER_NODES["proxies"].append(proxy_val)
             save_cluster()
-            total_proxies = len(CLUSTER_NODES["proxies"])
-            bot.send_message(message.chat.id, f"✅ پرۆکسی نوێ بە سەرکەوتوویی زیاد کرا!\n🛡 کۆی پرۆکسییەکان: `{total_proxies}`", parse_mode="Markdown")
+            bot.send_message(message.chat.id, "✅ پرۆکسی سەرکەوتووانە زیاد کرا!", parse_mode="Markdown")
         else:
-            bot.send_message(message.chat.id, "⚠️ ئەم پرۆکسییە پێشتر لە لیستی تۆڕەکەدا هەیە.")
+            bot.send_message(message.chat.id, "⚠️ ئەم پرۆکسییە پێشتر هەیە.")
     except Exception as e:
         bot.send_message(message.chat.id, f"❌ هەڵە: {e}")
 
@@ -475,14 +414,12 @@ def admin_prime_add_gateway(message):
         if "http" not in gw_val:
             bot.send_message(message.chat.id, "❌ تکایە گەیتوێیەکی دروست بنێرە.")
             return
-            
         if gw_val not in CLUSTER_NODES["gateways"]:
             CLUSTER_NODES["gateways"].append(gw_val)
             save_cluster()
-            total_gws = len(CLUSTER_NODES["gateways"])
-            bot.send_message(message.chat.id, f"✅ گەیتوێی نوێ بە سەرکەوتوویی زیاد کرا!\n⚡ کۆی گەیتوێکان: `{total_gws}`", parse_mode="Markdown")
+            bot.send_message(message.chat.id, "✅ گەیتوێ سەرکەوتووانە زیاد کرا!", parse_mode="Markdown")
         else:
-            bot.send_message(message.chat.id, "⚠️ ئەم گەیتوێیە پێشتر لە تۆڕەکەدا هەیە.")
+            bot.send_message(message.chat.id, "⚠️ ئەم گەیتوێیە پێشتر هەیە.")
     except Exception as e:
         bot.send_message(message.chat.id, f"❌ هەڵە: {e}")
 
@@ -494,7 +431,6 @@ def admin_prime_add_balance(message):
         target_user = get_omega_user(target_id)
         target_user['balance'] += amount
         save_db()
-        
         bot.send_message(message.chat.id, f"✅ باڵانس بۆ ئایدی {target_id} زیاد کرا بڕی: {amount:,} IQD")
         bot.send_message(target_id, f"🎉 پیرۆزە! باڵانس بە بڕی `{amount:,} IQD` بۆت زیاد کرا.", parse_mode="Markdown")
     except Exception as e:
@@ -505,7 +441,7 @@ def admin_prime_broadcast(message):
     count = 0
     for uid in DATABASE.keys():
         try:
-            bot.send_message(int(uid), f"📢 **پەیامی سەرکردایەتی باڵای ئۆمێگا پرایم:**\n\n{text_content}", parse_mode="Markdown")
+            bot.send_message(int(uid), f"📢 **پەیامی سەرکردایەتی:**\n\n{text_content}", parse_mode="Markdown")
             count += 1
         except Exception:
             pass
@@ -547,13 +483,12 @@ def omega_prime_callback_router(call):
             types.InlineKeyboardButton("🌐 بژاردەی تر (General Abuse)", callback_data=f"pcrime_other_{package_code}"),
             types.InlineKeyboardButton("⬅️ گەڕانەوە", callback_data="pback_main")
         )
-        bot.answer_callback_query(call.id, "پاکێج قبوڵ کرا، جۆری تاوان هەڵبژێرە:")
+        bot.answer_callback_query(call.id, "جۆری تاوان هەڵبژێرە:")
         try:
             bot.edit_message_text(
                 chat_id=call.message.chat.id,
                 message_id=call.message.message_id,
-                text=f"📂 **پاکێجی ئۆمێگا پرایم هەڵبژێردرا و نرخەکەی ({package_cost:,} IQD) کەم دەبێتەوە.**\n\n"
-                     f"📌 ئێستا جۆری تاوانی ئامانج دیاری بکە:",
+                text=f"📂 **نرخ ({package_cost:,} IQD) کەم دەبێتەوە.**\n\n📌 جۆری تاوانی ئامانج دیاری بکە:",
                 reply_markup=markup,
                 parse_mode="Markdown"
             )
@@ -584,28 +519,27 @@ def execute_omega_prime_sequence(message, package_code, crime_type):
         user_data['balance'] -= package_cost
         save_db()
     else:
-        bot.send_message(message.chat.id, "❌ باڵانسی تۆ بەس ناکات بۆ ئەم کڕینە!")
+        bot.send_message(message.chat.id, "❌ باڵانس بەس ناکات!")
         return
     
     crime_texts = {
-        "hacking": "Omega Prime 100-System alert: Billion-line matrix exploit flooding target",
-        "porngraphy": "Omega Prime 100-System violation: Explicit media distribution across 100 nodes",
-        "drugs": "Omega Prime 100-System violation: Controlled substance network tracing via 100 shields",
-        "terrorism": "Omega Prime 100-System high priority alert: Extremist content suppression",
-        "weapons": "Omega Prime 100-System illegal trade report: Unauthorized arms sales block",
-        "scam": "Omega Prime 100-System fraud alert: Phishing infrastructure disruption",
-        "threats": "Omega Prime 100-System harassment alert: Severe physical threats incitement",
-        "hate": "Omega Prime 100-System hate speech violation: Community guidelines breach",
-        "other": "Omega Prime 100-System general guidelines violation via 100-system matrix"
+        "hacking": "Omega Prime alert: Matrix exploit flooding target",
+        "porngraphy": "Omega Prime violation: Explicit media distribution",
+        "drugs": "Omega Prime violation: Controlled substance network",
+        "terrorism": "Omega Prime high priority alert: Extremist content",
+        "weapons": "Omega Prime illegal trade report",
+        "scam": "Omega Prime fraud alert: Phishing infrastructure",
+        "threats": "Omega Prime harassment alert",
+        "hate": "Omega Prime hate speech violation",
+        "other": "Omega Prime general guidelines violation"
     }
     active_reason_text = crime_texts.get(crime_type, crime_texts["other"])
 
     sent_msg = bot.send_message(
         message.chat.id,
-        f"🌌 **هێرشی پرایم (100 سیستەم) دەستی پێکرد!**\n\n"
+        f"🌌 **هێرشی پرایم دەستی پێکرد!**\n\n"
         f"💰 خەرجکراو: `{package_cost:,} IQD` | ماوە: `{user_data['balance']:,} IQD`\n"
         f"🎯 ئامانج: `{target_url}`\n"
-        f"📌 جۆر: {crime_type}\n"
         f"📊 ڕەوش: 0 / {target_count:,}",
         parse_mode="Markdown"
     )
@@ -615,12 +549,9 @@ def execute_omega_prime_sequence(message, package_code, crime_type):
             bot.edit_message_text(
                 chat_id=message.chat.id,
                 message_id=sent_msg.message_id,
-                text=f"🌌 **هێرشی پرایم لەسەر ۱۰۰ سیستەمی کوانتۆمی بەڕێوەیە...**\n\n"
-                     f"💰 خەرجکراو: `{package_cost:,} IQD` | ماوە: `{user_data['balance']:,} IQD`\n"
+                text=f"🌌 **هێرش بەڕێوەیە...**\n\n"
                      f"🎯 ئامانج: `{target_url}`\n"
-                     f"📌 جۆر: {crime_type}\n"
-                     f"📊 نێردراو: {current:,} / {total:,} (سەرکەوتوو: {success:,})\n"
-                     f"⚡ دۆخ: کارکردنی بلیۆن ڕیزی بێسنوور لەسەر Omega Prime Matrix ⚡",
+                     f"📊 نێردراو: {current:,} / {total:,} (سەرکەوتوو: {success:,})",
                 parse_mode="Markdown"
             )
         except Exception:
@@ -633,22 +564,19 @@ def execute_omega_prime_sequence(message, package_code, crime_type):
             save_db()
         bot.send_message(
             message.chat.id, 
-            f"✅ **پیرۆزە! هێرشی پرایم بە سەرکەوتوویی کۆتایی هات.**\n"
-            f"🎯 ئامانج بڕی `{target_count:,}` ڕاپۆرتی ۱۰۰ سیستەمی پێگەییشت.\n"
-            f"💰 باڵانسی ماوەی هەژمارەت: `{user_data['balance']:,} IQD`",
+            f"✅ **هێرشی پرایم بە سەرکەوتوویی کۆتایی هات.**\n"
+            f"🎯 کۆی ڕاپۆرتە نێردراوەکان: `{target_count:,}`\n"
+            f"💰 باڵانسی ماوە: `{user_data['balance']:,} IQD`",
             parse_mode="Markdown"
         )
 
     threading.Thread(target=background_worker).start()
 
-# ---------------------------------------------------------------------
-# OMEGA PRIME MAIN EXECUTION LOOP
-# ---------------------------------------------------------------------
 if __name__ == '__main__':
-    logger.info("Initializing Ultimate Omega Prime Billion-Line Matrix with 100 systems...")
+    logger.info("Initializing Ultimate Omega Prime Clean Edition...")
     while True:
         try:
             bot.infinity_polling(timeout=60, long_polling_timeout=30)
         except Exception as err:
-            logger.error(f"Omega Prime Core Recovery Triggered due to: {err}")
+            logger.error(f"Recovery Triggered: {err}")
             time.sleep(2)
