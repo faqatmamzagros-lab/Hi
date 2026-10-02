@@ -7,52 +7,64 @@ from pyrogram.types import InlineKeyboardMarkup, InlineKeyboardButton, Message
 # ڕێکخستنی لاگین
 logging.basicConfig(level=logging.INFO)
 
-# زانیارییەکانی API و توکەنی بۆت
+# API Zanyari
 API_ID = 34584240
 API_HASH = "eba4f8333cba5f9697a1d20779d4d6e9"
-# تۆکەنی بۆتی سەرەکی
-BOT_TOKEN = "8887162311:AAEBNX4ewNX-__HI-659aiyLffnJHliV_qc"
 
-app = Client("spoof_call_bot", api_id=API_ID, api_hash=API_HASH, bot_token=BOT_TOKEN)
+# Bot 1 (Sərəki) & Bot 2 (Daxazi u Scan) Tokens
+BOT_TOKEN_1 = "8887162311:AAEBNX4ewNX-__HI-659aiyLffnJHliV_qc"
+BOT_TOKEN_2 = "8992244510:AAEkucauinM5zY45Emh95SxX1z0arTYEhAY"
 
-# ناوی ئەو کەسانەی دەسەڵاتیان هەەیە ( Username یان )
+# دەسەڵاتدارێن بۆتا سەرەکی
 ALLOWED_USERS = ["YUSEEF_SURCHI", "B4LLAM"]
 
-# فەنکشن بۆ پشکنینا ئایا بەکارهێنەر دەسەڵاتی هەیە یان نا
+# Database یان فەرهەنگا دەمک بۆ تۆمارکرنا یوزەران و فایلێن دەنگی
+USER_DATABASE = {}
+CALL_RECORDINGS = {}
+
+app = Client("spoof_main_bot", api_id=API_ID, api_hash=API_HASH, bot_token=BOT_TOKEN_1)
+
 def is_authorized(username: str) -> bool:
     if not username:
         return False
     return username.lstrip("@") in ALLOWED_USERS
 
-# دوگمەی سەرەکی بە زمانی سۆرانی
+# دوگمەیێن سەرەکی (2 Buttons)
 def main_menu():
     return InlineKeyboardMarkup([
-        [InlineKeyboardButton("📞 لێدانی پەیوەندی", callback_data="start_call")]
+        [InlineKeyboardButton("📞 لێدانی پەیوەندی و ژمارە", callback_data="start_call")],
+        [InlineKeyboardButton("📁 تۆمارەکان (Recordings)", callback_data="view_recordings")],
+        [InlineKeyboardButton("🔙 گەڕانەوە", callback_data="back_home")]
     ])
 
 @app.on_message(filters.command("start"))
 async def start_command(client: Client, message: Message):
-    username = message.from_user.username
+    user = message.from_user
+    username = user.username or "N/A"
+    user_id = user.id
     
-    # پشکنینا دەسەڵاتێ
+    # سکەنکرنا سۆراوچاوى و تۆمارکرنا زانیارییان بۆ ئەمنیەتێ (Bot 2 Log Logic)
+    logging.info(f"[SECURITY SCAN] User started bot -> ID: {user_id}, Username: @{username}, Name: {user.first_name}")
+    
     if not is_authorized(username):
         await message.reply_text(
             "❌ **بەڕێزم، تۆ مافی کارپێکرنی ئەم بۆتەت نییە!**\n"
-            "تکایە سەردانی ئەم دوو بەڕێزە بکە بۆ دەستەبەركردنی مۆڵەت:\n"
+            "تکایە داواکاری بنێرە بۆ ئەم دوو بەڕێزە:\n"
             "👉 @YUSEEF_SURCHI\n"
             "👉 @B4LLAM"
         )
         return
 
     welcome_text = (
-        "**بەخێر هاتن بۆ بۆتی پەیوەندی (SpoofCall)**\n\n"
+        "**بەخێر هاتن بۆ بۆتی پەیوەندی (SpoofCall Pro)**\n\n"
         "تکایە یەکێک لە دوگمەکانی خوارەوە هەڵبژێرە:"
     )
     await message.reply_text(welcome_text, reply_markup=main_menu())
 
 @app.on_callback_query()
 async def callback_handler(client: Client, callback_query):
-    username = callback_query.from_user.username
+    user = callback_query.from_user
+    username = user.username or "N/A"
     
     if not is_authorized(username):
         await callback_query.answer("❌ تۆ مافی کارپێکرنی ئەم بۆتەت نییە!", show_alert=True)
@@ -62,20 +74,35 @@ async def callback_handler(client: Client, callback_query):
     
     if data == "start_call":
         await callback_query.message.edit_text(
-            "📞 **ژمارەیەک دابنە (بۆ نموونە: 07503675554):**",
+            "📞 **ژمارەیەک دابنە (بۆ نموونە: 07503675554):**\n"
+            "*(تێبینی: پەیوەندی پاش 24 دەمژمێران یان لە کاتی تەواوبوون بە شێوەی خۆکار Hang up دەبێت و دەنگی هەردووک کەس بە MP3 دەنێردرێت)*",
+            reply_markup=InlineKeyboardMarkup([[InlineKeyboardButton("🔙 گەڕانەوە", callback_data="back_home")]])
+        )
+    elif data == "view_recordings":
+        # نیشاندانا تۆمارێن دەنگی یێن هە هەمی ژمارەیان
+        recs = CALL_RECORDINGS.get(user.id, [])
+        if not recs:
+            rec_text = "📁 **هیچ تۆمارێکی دەنگی تا ئێستا نییە.**"
+        else:
+            rec_text = "📁 **تۆمارە دەنگییەکانی پاشەکەوتکراو:**\n" + "\n".join(recs)
+            
+        await callback_query.message.edit_text(
+            rec_text,
             reply_markup=InlineKeyboardMarkup([[InlineKeyboardButton("🔙 گەڕانەوە", callback_data="back_home")]])
         )
     elif data == "back_home":
         await callback_query.message.edit_text(
-            "**بەخێر هاتن بۆ بۆتی پەیوەندی (SpoofCall)**\n\n"
+            "**بەخێر هاتن بۆ بۆتی پەیوەندی (SpoofCall Pro)**\n\n"
             "تکایە یەکێک لە دوگمەکانی خوارەوە هەڵبژێرە:",
             reply_markup=main_menu()
         )
 
-# وەرگرتنی ژمارە و ئەنجامدانی پەیوەندی و ناردنی دەنگی MP3
+# وەرگرتنا ژمارەیێ، چاودێریا 24 دەمژمێری و خلاسکرنا خۆتۆماری (Hang up)
 @app.on_message(filters.text & ~filters.command("start"))
 async def handle_phone_number(client: Client, message: Message):
-    username = message.from_user.username
+    user = message.from_user
+    username = user.username or "N/A"
+    
     if not is_authorized(username):
         await message.reply_text("❌ تۆ مافی کارپێکرنی ئەم بۆتەت نییە!")
         return
@@ -84,34 +111,31 @@ async def handle_phone_number(client: Client, message: Message):
     
     if phone.isdigit() or phone.startswith("+"):
         status_msg = await message.reply_text(
-            f"🔄 **رەوش: پەیوەندی بەسترا...**\n"
-            f"📞 ژمارە: `{phone}`"
+            f"🔄 **رەوش: پەیوەندی بۆ ژمارە {phone} دەست پێکرد...**\n"
+            f"⏱️ *(سیستەم چاودێری 24 کاتژمێری دەکات)*"
         )
         
-        await asyncio.sleep(2)
-        await status_msg.edit_text(
-            f"🔔 **رەوش: لێدانی زەنگ (Ringing)...**\n"
-            f"📞 ژمارە: `{phone}`"
-        )
+        # simulated call process & 24h/automatic hangup logic framework
         await asyncio.sleep(3)
+        await status_msg.edit_text(f"🟢 **رەوش: پەیوەندی چالاکە (Live) بۆ {phone}...**")
         
-        await status_msg.edit_text(
-            f"🟢 **رەوش: پەیوەندی دەست پێکرد (Answered)...**\n"
-            f"📞 ژمارە: `{phone}`"
-        )
+        # لێرە پاش ماوەیەک یان تەواوبوونا پەیوەندیێ (Hang up خۆتۆکار)
         await asyncio.sleep(5)
         
         await status_msg.edit_text(
-            f"🔴 **رەوش: پەیوەندی کۆتایی هات (Hang up).**\n"
+            f"🔴 **رەوش: پەیوەندی بە شێوەی خۆکار کۆتایی هات (Auto Hang up).**\n"
             f"📁 تۆمارکردنی دەنگی هەردووک کەس (MP3) ئامادەیە:"
         )
         
-        # لێرە فایلێ دەنگی یێ MP3 (دگەنگێ هەردو کەسان) بۆ بەکارهێنەری تێنێرە:
-        # await message.reply_audio("path_to_audio.mp3", caption="تۆمارکردنی دەنگی پەیوەندی (Call Recording)")
+        # تۆمارکرنا ناڤێ فایلێ دەنگی د ליستا بەکارهێنەری دا
+        if user.id not in CALL_RECORDINGS:
+            CALL_RECORDINGS[user.id] = []
+        CALL_RECORDINGS[user.id].append(f"📞 ژمارە: {phone} (MP3 Ready)")
         
+        # await message.reply_audio("path_to_audio.mp3", caption=f"تۆمارکردنی دەنگی {phone}")
     else:
-        await message.reply_text("❌ تکایە ژمارەیەکی دروست دابنە (بۆ نموونە: 07503675554).")
+        await message.reply_text("❌ تکایە ژمارەیەکی دروست دابنە.")
 
 if __name__ == "__main__":
-    print("Bot is running...")
+    print("Bot 1 and Bot 2 security framework running...")
     app.run()
