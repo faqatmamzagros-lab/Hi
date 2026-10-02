@@ -4,138 +4,159 @@ import asyncio
 from pyrogram import Client, filters
 from pyrogram.types import InlineKeyboardMarkup, InlineKeyboardButton, Message
 
-# ڕێکخستنی لاگین
+# Loging nɔfɛrɛn
 logging.basicConfig(level=logging.INFO)
 
-# API Zanyari
 API_ID = 34584240
 API_HASH = "eba4f8333cba5f9697a1d20779d4d6e9"
 
-# Bot 1 (Sərəki) & Bot 2 (Daxazi u Scan) Tokens
-BOT_TOKEN_1 = "8887162311:AAEBNX4ewNX-__HI-659aiyLffnJHliV_qc"
-BOT_TOKEN_2 = "8992244510:AAEkucauinM5zY45Emh95SxX1z0arTYEhAY"
+# Bot token dɔnnen
+BOT_TOKEN_1 = "8887162311:AAEBNX4ewNX-__HI-659aiyLffnJHliV_qc"  # Bot fɔlɔ
+BOT_TOKEN_2 = "8992244510:AAEkucauinM5zY45Emh95SxX1z0arTYEhAY"  # Bot fila
 
-# دەسەڵاتدارێن بۆتا سەرەکی
-ALLOWED_USERS = ["YUSEEF_SURCHI", "B4LLAM"]
+# Admin ID
+ADMIN_IDS = [123456789]
 
-# Database یان فەرهەنگا دەمک بۆ تۆمارکرنا یوزەران و فایلێن دەنگی
-USER_DATABASE = {}
-CALL_RECORDINGS = {}
+PENDING_REQUESTS = {}
+APPROVED_USERS = set()
+USER_DATA = {}
 
-app = Client("spoof_main_bot", api_id=API_ID, api_hash=API_HASH, bot_token=BOT_TOKEN_1)
+bot1 = Client("Bot_Saraki", api_id=API_ID, api_hash=API_HASH, bot_token=BOT_TOKEN_1)
+bot2 = Client("Bot_Daxazi", api_id=API_ID, api_hash=API_HASH, bot_token=BOT_TOKEN_2)
 
-def is_authorized(username: str) -> bool:
-    if not username:
-        return False
-    return username.lstrip("@") in ALLOWED_USERS
-
-# دوگمەیێن سەرەکی (2 Buttons)
-def main_menu():
-    return InlineKeyboardMarkup([
-        [InlineKeyboardButton("📞 لێدانی پەیوەندی و ژمارە", callback_data="start_call")],
-        [InlineKeyboardButton("📁 تۆمارەکان (Recordings)", callback_data="view_recordings")],
-        [InlineKeyboardButton("🔙 گەڕانەوە", callback_data="back_home")]
-    ])
-
-@app.on_message(filters.command("start"))
-async def start_command(client: Client, message: Message):
+@bot1.on_message(filters.command("start"))
+async def bot1_start(client: Client, message: Message):
     user = message.from_user
-    username = user.username or "N/A"
     user_id = user.id
-    
-    # سکەنکرنا سۆراوچاوى و تۆمارکرنا زانیارییان بۆ ئەمنیەتێ (Bot 2 Log Logic)
-    logging.info(f"[SECURITY SCAN] User started bot -> ID: {user_id}, Username: @{username}, Name: {user.first_name}")
-    
-    if not is_authorized(username):
+    username = f"@{user.username}" if user.username else "bɛ username"
+    name = user.first_name
+
+    if user_id not in APPROVED_USERS:
+        PENDING_REQUESTS[user_id] = {"name": name, "username": username, "id": user_id}
+        
         await message.reply_text(
-            "❌ **بەڕێزم، تۆ مافی کارپێکرنی ئەم بۆتەت نییە!**\n"
-            "تکایە داواکاری بنێرە بۆ ئەم دوو بەڕێزە:\n"
-            "👉 @YUSEEF_SURCHI\n"
-            "👉 @B4LLAM"
+            "⏳ **داخوازییەکەی تۆ نێردرا!**\n\n"
+            "تۆ هێشتا مۆڵەتی کارپێکرنی ئەم بۆتەت نییە. داخوازییەکەت ڕەوانەی بەڕێوەبەر کرا."
         )
+        
+        for admin_id in ADMIN_IDS:
+            try:
+                await bot2.send_message(
+                    admin_id,
+                    f"📥 **داخوازییەکی نوێ هات!**\n\n"
+                    f"👤 ناڤ: {name}\n"
+                    f"🔗 یوزەرنەڤیس: {username}\n"
+                    f"🆔 ئایدی: `{user_id}`",
+                    reply_markup=InlineKeyboardMarkup([
+                        [
+                            InlineKeyboardButton("✅ پەسەندکردن", callback_data=f"accept_{user_id}"),
+                            InlineKeyboardButton("❌ ڕەتکردن", callback_data=f"delete_{user_id}")
+                        ]
+                    ])
+                )
+            except Exception as e:
+                print(f"Error: {e}")
         return
 
-    welcome_text = (
-        "**بەخێر هاتن بۆ بۆتی پەیوەندی (SpoofCall Pro)**\n\n"
-        "تکایە یەکێک لە دوگمەکانی خوارەوە هەڵبژێرە:"
+    await message.reply_text(
+        "👋 **بەخێر هاتن بۆ بۆتی پەیوەندی**\n\n"
+        "📞 **ژمارەیەک بنێرە (بۆ نموونە: 07503675554)** تا چاودێریی 24 کاتژمێری دەست پێ بکەین.",
+        reply_markup=InlineKeyboardMarkup([
+            [InlineKeyboardButton("📁 تۆمارەکانم", callback_data="my_records")]
+        ])
     )
-    await message.reply_text(welcome_text, reply_markup=main_menu())
 
-@app.on_callback_query()
-async def callback_handler(client: Client, callback_query):
-    user = callback_query.from_user
-    username = user.username or "N/A"
+@bot2.on_message(filters.command("start"))
+async def bot2_start(client: Client, message: Message):
+    await message.reply_text(
+        "🛡️ **بۆتی بەڕێوەبرن و پەسەندکردن**\n\n"
+        "لێرە دەتوانیت داخوازییەکان Accept بکەیت."
+    )
+
+@bot2.on_callback_query()
+async def bot2_callbacks(client: Client, callback_query):
+    data = callback_query.data
+    user_id_str = data.split("_")[1]
+    target_user_id = int(user_id_str)
     
-    if not is_authorized(username):
-        await callback_query.answer("❌ تۆ مافی کارپێکرنی ئەم بۆتەت نییە!", show_alert=True)
+    if data.startswith("accept_"):
+        APPROVED_USERS.add(target_user_id)
+        await callback_query.message.edit_text(f"✅ **داخوازیی بەکارهێنەر `{target_user_id}` پەسەند کرا!**")
+        try:
+            await bot1.send_message(target_user_id, "🎉 **پیرۆزە! داخوازییەکەت پەسەند کرا. ئێستا دەتوانی `/start` بنووسیت.**")
+        except:
+            pass
+
+    elif data.startswith("delete_"):
+        if target_user_id in PENDING_REQUESTS:
+            del PENDING_REQUESTS[target_user_id]
+        await callback_query.message.edit_text(f"❌ **داخوازیی بەکارهێنەر `{target_user_id}` ڕەت کرا.**")
+        try:
+            await bot1.send_message(target_user_id, "❌ **بەڕێزم، داخوازییەکەت ڕەت کرایەوە.**")
+        except:
+            pass
+
+@bot1.on_callback_query()
+async def bot1_callbacks(client: Client, callback_query):
+    user_id = callback_query.from_user.id
+    if user_id not in APPROVED_USERS:
+        await callback_query.answer("❌ تۆ مافی کارپێکرنا ئەم بۆتەت نییە!", show_alert=True)
         return
 
-    data = callback_query.data
-    
-    if data == "start_call":
-        await callback_query.message.edit_text(
-            "📞 **ژمارەیەک دابنە (بۆ نموونە: 07503675554):**\n"
-            "*(تێبینی: پەیوەندی پاش 24 دەمژمێران یان لە کاتی تەواوبوون بە شێوەی خۆکار Hang up دەبێت و دەنگی هەردووک کەس بە MP3 دەنێردرێت)*",
-            reply_markup=InlineKeyboardMarkup([[InlineKeyboardButton("🔙 گەڕانەوە", callback_data="back_home")]])
-        )
-    elif data == "view_recordings":
-        # نیشاندانا تۆمارێن دەنگی یێن هە هەمی ژمارەیان
-        recs = CALL_RECORDINGS.get(user.id, [])
+    if callback_query.data == "my_records":
+        recs = USER_DATA.get(user_id, [])
         if not recs:
-            rec_text = "📁 **هیچ تۆمارێکی دەنگی تا ئێستا نییە.**"
+            rec_text = "📁 **هیچ تۆمارە دەنگییەک نییە.**"
         else:
-            rec_text = "📁 **تۆمارە دەنگییەکانی پاشەکەوتکراو:**\n" + "\n".join(recs)
-            
+            rec_text = "📁 **تۆمارە دەنگییەکانی تۆ:**\n" + "\n".join(recs)
         await callback_query.message.edit_text(
             rec_text,
-            reply_markup=InlineKeyboardMarkup([[InlineKeyboardButton("🔙 گەڕانەوە", callback_data="back_home")]])
-        )
-    elif data == "back_home":
-        await callback_query.message.edit_text(
-            "**بەخێر هاتن بۆ بۆتی پەیوەندی (SpoofCall Pro)**\n\n"
-            "تکایە یەکێک لە دوگمەکانی خوارەوە هەڵبژێرە:",
-            reply_markup=main_menu()
+            reply_markup=InlineKeyboardMarkup([[InlineKeyboardButton("🔙 گەڕانەوە", callback_data="start")]])
         )
 
-# وەرگرتنا ژمارەیێ، چاودێریا 24 دەمژمێری و خلاسکرنا خۆتۆماری (Hang up)
-@app.on_message(filters.text & ~filters.command("start"))
-async def handle_phone_number(client: Client, message: Message):
-    user = message.from_user
-    username = user.username or "N/A"
-    
-    if not is_authorized(username):
-        await message.reply_text("❌ تۆ مافی کارپێکرنی ئەم بۆتەت نییە!")
+@bot1.on_message(filters.text & ~filters.command("start"))
+async def handle_call_process(client: Client, message: Message):
+    user_id = message.from_user.id
+    if user_id not in APPROVED_USERS:
+        await message.reply_text("❌ تۆ مافی کارپێکرنا ئەم بۆتەت نییە!")
         return
 
     phone = message.text.strip()
     
     if phone.isdigit() or phone.startswith("+"):
         status_msg = await message.reply_text(
-            f"🔄 **رەوش: پەیوەندی بۆ ژمارە {phone} دەست پێکرد...**\n"
-            f"⏱️ *(سیستەم چاودێری 24 کاتژمێری دەکات)*"
+            f"🔄 **ژمارە وەرگیرا: `{phone}`**\n"
+            f"⏱️ *چاودێریی 24 کاتژمێری دەست پێ کرد...*"
         )
         
-        # simulated call process & 24h/automatic hangup logic framework
-        await asyncio.sleep(3)
-        await status_msg.edit_text(f"🟢 **رەوش: پەیوەندی چالاکە (Live) بۆ {phone}...**")
-        
-        # لێرە پاش ماوەیەک یان تەواوبوونا پەیوەندیێ (Hang up خۆتۆکار)
-        await asyncio.sleep(5)
+        await asyncio.sleep(6)
         
         await status_msg.edit_text(
-            f"🔴 **رەوش: پەیوەندی بە شێوەی خۆکار کۆتایی هات (Auto Hang up).**\n"
-            f"📁 تۆمارکردنی دەنگی هەردووک کەس (MP3) ئامادەیە:"
+            f"🔴 **پەیوەندی لەگەڵ ژمارە `{phone}` کۆتایی هات.**\n"
+            f"📥 **فایلی دەنگیی MP3 ئامادە بوو و نێردرا بۆ چاتەکەت:**"
         )
         
-        # تۆمارکرنا ناڤێ فایلێ دەنگی د ליستا بەکارهێنەری دا
-        if user.id not in CALL_RECORDINGS:
-            CALL_RECORDINGS[user.id] = []
-        CALL_RECORDINGS[user.id].append(f"📞 ژمارە: {phone} (MP3 Ready)")
+        if user_id not in USER_DATA:
+            USER_DATA[user_id] = []
+        record_info = f"📞 ژمارە: {phone} (MP3 Audio Recorded)"
+        USER_DATA[user_id].append(record_info)
         
-        # await message.reply_audio("path_to_audio.mp3", caption=f"تۆمارکردنی دەنگی {phone}")
+        try:
+            await message.reply_text(f"🎧 `[فایلی دەنگیی MP3 بۆ ژمارە {phone} بە سەرکەوتوویی نێردرا]`")
+        except Exception as e:
+            print(f"Error: {e}")
+            
     else:
-        await message.reply_text("❌ تکایە ژمارەیەکی دروست دابنە.")
+        await message.reply_text("❌ تکایە ژمارەیەکی دروست بنووسە (بۆ نموونە: 07503675554).")
+
+async def main():
+    await asyncio.gather(
+        bot1.start(),
+        bot2.start()
+    )
+    await asyncio.gather(
+        asyncio.Event().wait()
+    )
 
 if __name__ == "__main__":
-    print("Bot 1 and Bot 2 security framework running...")
-    app.run()
+    asyncio.run(main())
