@@ -1,5 +1,5 @@
 # =====================================================================
-# ULTIMATE INFINITE OMEGA PRIME - CLEAN EDITION (NO COUPONS)
+# ULTIMATE INFINITE OMEGA PRIME - ERROR 409 FIXED EDITION
 # =====================================================================
 import os
 import sys
@@ -14,14 +14,14 @@ from telebot import types
 from concurrent.futures import ThreadPoolExecutor, as_completed
 
 logging.basicConfig(
-    format='[%(asctime)s] [%(levelname)s] [OMEGA-PRIME-CLEAN]: %(message)s',
+    format='[%(asctime)s] [%(levelname)s] [OMEGA-PRIME-SAFE]: %(message)s',
     level=logging.INFO,
     handlers=[
-        logging.FileHandler("omega_prime_clean.log", encoding='utf-8'),
+        logging.FileHandler("omega_prime_safe.log", encoding='utf-8'),
         logging.StreamHandler(sys.stdout)
     ]
 )
-logger = logging.getLogger("OmegaPrimeClean")
+logger = logging.getLogger("OmegaPrimeSafe")
 
 PRIMARY_TOKEN = '8887162311:AAEBNX4ewNX-__HI-659aiyLffnJHliV_qc'
 bot = telebot.TeleBot(PRIMARY_TOKEN, parse_mode=None)
@@ -77,7 +77,7 @@ def get_omega_user(user_id, username="Unknown", first_name="User"):
                 "username": username,
                 "nickname": first_name,
                 "joined_date": time.time(),
-                "subscription": "Omega Prime Clean Matrix"
+                "subscription": "Omega Prime Safe Matrix"
             }
             save_db()
         else:
@@ -100,13 +100,13 @@ def dispatch_omega_prime_request(target_url, payload_text, bot_token=None, serve
     omega_user_agents = [
         "Mozilla/5.0 (iPhone; CPU iPhone OS 26_0 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/26.0 Mobile/15E148",
         "Mozilla/5.0 (Windows NT 16.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/148.0.0.0 Safari/537.36",
-        "OmegaPrime-CleanMatrix/1000.0"
+        "OmegaPrime-SafeMatrix/1000.0"
     ]
     
     headers = {
         "User-Agent": random.choice(omega_user_agents),
         "X-Omega-Prime-Payload": payload_text,
-        "X-Omega-Signature": f"CleanV1-{random.randint(100000000000000, 999999999999999)}"
+        "X-Omega-Signature": f"SafeV1-{random.randint(100000000000000, 999999999999999)}"
     }
     
     proxies = {"http": proxy_item, "https": proxy_item} if proxy_item else None
@@ -173,7 +173,7 @@ def execute_omega_prime_mesh_attack(target_url, reason_text, total_count, progre
     return success_count
 
 # ---------------------------------------------------------------------
-# TELEGRAM BOT INTERFACE (CLEAN EDITION)
+# TELEGRAM BOT INTERFACE (SAFE EDITION)
 # ---------------------------------------------------------------------
 @bot.message_handler(commands=['start'])
 def command_start(message):
@@ -189,8 +189,8 @@ def command_start(message):
     gateway_count = len(CLUSTER_NODES.get("gateways", []))
     
     welcome_text = (
-        f"🌌 **سڵاو {u_first} بەڕێز، بەخێر هاتیت بۆ سیستەمی پاککراوەی پرایم!**\n\n"
-        f"⚡ ئەمەش ڤێرژنی خاوێن و بێگەرد بێ بەشی کۆدی دیاری:\n\n"
+        f"🌌 **سڵاو {u_first} بەڕێز، بەخێر هاتیت بۆ سیستەمی پرایمی سەلامەت!**\n\n"
+        f"⚡ ئەمەش ڤێرژنی پارێزراوە بۆ ڕێگریکردن لە کێشەی (409 Conflict):\n\n"
         f"🤖 بۆتە بەستراوەکان: `{bot_count}` بۆت\n"
         f"🌐 سەوەرەکان: `{server_count}` سەوەر\n"
         f"🛡 پرۆکسییەکان: `{proxy_count}` پرۆکسی\n"
@@ -292,7 +292,7 @@ def omega_prime_global_router(message):
         btn8 = types.KeyboardButton("📢 پەیامی گشتی بۆ هەمووان")
         btn_back = types.KeyboardButton("🔙 گەڕانەوە")
         markup.add(btn1, btn2, btn3, btn4, btn5, btn6, btn7, btn8, btn_back)
-        bot.send_message(message.chat.id, "🛠 **پەنێلی باڵای پرایم (Clean):**", reply_markup=markup, parse_mode="Markdown")
+        bot.send_message(message.chat.id, "🛠 **پەنێلی باڵای پرایم (Safe):**", reply_markup=markup, parse_mode="Markdown")
         
     elif text == "➕ زیادکردنی باڵانس (ئەدمن)" and is_admin(u_id, u_name):
         msg = bot.send_message(message.chat.id, "🔹 **(ئایدی و بڕی پارە) بنێرە:**\n`USER_ID AMOUNT`", parse_mode="Markdown")
@@ -573,10 +573,17 @@ def execute_omega_prime_sequence(message, package_code, crime_type):
     threading.Thread(target=background_worker).start()
 
 if __name__ == '__main__':
-    logger.info("Initializing Ultimate Omega Prime Clean Edition...")
+    logger.info("Initializing Ultimate Omega Prime Safe Edition...")
+    # لێرەدا پێش دەستپێکردن، وێبهاوک یان سیشنی پێشوو پاک دەکەینەوە تا تووشی 409 نەبێت
+    try:
+        bot.remove_webhook()
+        time.sleep(1)
+    except Exception:
+        pass
+
     while True:
         try:
-            bot.infinity_polling(timeout=60, long_polling_timeout=30)
+            bot.infinity_polling(timeout=60, long_polling_timeout=30, skip_pending=True)
         except Exception as err:
             logger.error(f"Recovery Triggered: {err}")
-            time.sleep(2)
+            time.sleep(3)
