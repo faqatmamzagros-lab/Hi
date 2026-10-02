@@ -4,33 +4,60 @@ import asyncio
 from pyrogram import Client, filters
 from pyrogram.types import InlineKeyboardMarkup, InlineKeyboardButton, Message
 
-# ڕێکخستنی لاگین (Logging setup)
+# ڕێکخستنی لاگین
 logging.basicConfig(level=logging.INFO)
 
-# زانیارییەکانی بۆت و ئەی پی ئای
+# زانیارییەکانی API و توکەنی بۆت
 API_ID = 34584240
 API_HASH = "eba4f8333cba5f9697a1d20779d4d6e9"
-BOT_TOKEN = "8887162311:AAEBNX4ewNX-__HI-659aiyLffnJHLiV_qc"
+# تۆکەنی بۆتی سەرەکی
+BOT_TOKEN = "8887162311:AAEBNX4ewNX-__HI-659aiyLffnJHliV_qc"
 
 app = Client("spoof_call_bot", api_id=API_ID, api_hash=API_HASH, bot_token=BOT_TOKEN)
 
-# دروستکردنی دوگمەی سەرەکی
+# ناوی ئەو کەسانەی دەسەڵاتیان هەەیە ( Username یان )
+ALLOWED_USERS = ["YUSEEF_SURCHI", "B4LLAM"]
+
+# فەنکشن بۆ پشکنینا ئایا بەکارهێنەر دەسەڵاتی هەیە یان نا
+def is_authorized(username: str) -> bool:
+    if not username:
+        return False
+    return username.lstrip("@") in ALLOWED_USERS
+
+# دوگمەی سەرەکی بە زمانی سۆرانی
 def main_menu():
     return InlineKeyboardMarkup([
-        [InlineKeyboardButton("📞 لێدانی پەیوەندی", callback_data="start_call")],
-        [InlineKeyboardButton("🔙 گەڕانەوە", callback_data="back_home")]
+        [InlineKeyboardButton("📞 لێدانی پەیوەندی", callback_data="start_call")]
     ])
 
 @app.on_message(filters.command("start"))
 async def start_command(client: Client, message: Message):
+    username = message.from_user.username
+    
+    # پشکنینا دەسەڵاتێ
+    if not is_authorized(username):
+        await message.reply_text(
+            "❌ **بەڕێزم، تۆ مافی کارپێکرنی ئەم بۆتەت نییە!**\n"
+            "تکایە سەردانی ئەم دوو بەڕێزە بکە بۆ دەستەبەركردنی مۆڵەت:\n"
+            "👉 @YUSEEF_SURCHI\n"
+            "👉 @B4LLAM"
+        )
+        return
+
     welcome_text = (
-        "**بەخێر هاتن بۆ بۆتی پەیوەندی**\n\n"
+        "**بەخێر هاتن بۆ بۆتی پەیوەندی (SpoofCall)**\n\n"
         "تکایە یەکێک لە دوگمەکانی خوارەوە هەڵبژێرە:"
     )
     await message.reply_text(welcome_text, reply_markup=main_menu())
 
 @app.on_callback_query()
 async def callback_handler(client: Client, callback_query):
+    username = callback_query.from_user.username
+    
+    if not is_authorized(username):
+        await callback_query.answer("❌ تۆ مافی کارپێکرنی ئەم بۆتەت نییە!", show_alert=True)
+        return
+
     data = callback_query.data
     
     if data == "start_call":
@@ -40,14 +67,19 @@ async def callback_handler(client: Client, callback_query):
         )
     elif data == "back_home":
         await callback_query.message.edit_text(
-            "**بەخێر هاتن بۆ بۆتی پەیوەندی**\n\n"
+            "**بەخێر هاتن بۆ بۆتی پەیوەندی (SpoofCall)**\n\n"
             "تکایە یەکێک لە دوگمەکانی خوارەوە هەڵبژێرە:",
             reply_markup=main_menu()
         )
 
-# وەرگرتنی ژمارە و نیشاندانی ڕەوش و ناردنی دەنگی بە MP3
+# وەرگرتنی ژمارە و ئەنجامدانی پەیوەندی و ناردنی دەنگی MP3
 @app.on_message(filters.text & ~filters.command("start"))
 async def handle_phone_number(client: Client, message: Message):
+    username = message.from_user.username
+    if not is_authorized(username):
+        await message.reply_text("❌ تۆ مافی کارپێکرنی ئەم بۆتەت نییە!")
+        return
+
     phone = message.text.strip()
     
     if phone.isdigit() or phone.startswith("+"):
@@ -71,11 +103,11 @@ async def handle_phone_number(client: Client, message: Message):
         
         await status_msg.edit_text(
             f"🔴 **رەوش: پەیوەندی کۆتایی هات (Hang up).**\n"
-            f"📁 تۆمارکردنی دەنگی ئامادەیە:"
+            f"📁 تۆمارکردنی دەنگی هەردووک کەس (MP3) ئامادەیە:"
         )
         
-        # بۆ ناردنی فایلی دەنگی MP3 دەتوانیت ئەم ڕێنماییە بەکاربهێنیت:
-        # await message.reply_audio("path_to_audio.mp3", caption="تۆمارکردنی پەیوەندی (Call Recording)")
+        # لێرە فایلێ دەنگی یێ MP3 (دگەنگێ هەردو کەسان) بۆ بەکارهێنەری تێنێرە:
+        # await message.reply_audio("path_to_audio.mp3", caption="تۆمارکردنی دەنگی پەیوەندی (Call Recording)")
         
     else:
         await message.reply_text("❌ تکایە ژمارەیەکی دروست دابنە (بۆ نموونە: 07503675554).")
