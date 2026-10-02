@@ -133,7 +133,7 @@ async def handle_tiktok_query(
 
 def main():
   # تۆکنی بۆتەکەت لێرە دابنە (یان لە Railway Environment Variables)
-  TOKEN = "YOUR_TELEGRAM_BOT_TOKEN"
+  TOKEN = "8868899334:AAGsbrI61_s7hasbA-dvoUD54JZ31dHd6mI"
 
   app = ApplicationBuilder().token(TOKEN).build()
 
