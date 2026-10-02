@@ -61,7 +61,7 @@ WELCOME_MESSAGE = f"""
 • 🎵 زانینی ئایا هەژمارەکە مۆسیقییە یان نەخێر
 • ✅ ئاشکراکردنی جۆری باوەڕپێکراوی تایبەت (وەک: دروستکەری بەناوبانگ)
 • ▶️ زانینی بوونی کەناڵی یوتیوبی بەستراوە
-• 🟡 زانینی بوونی هەژماری ئینستاگرامی بەستراوە
+• 🟡 زانینی بوونی هەژماری انستاگرامی بەستراوە
 • ⛔ زانینی ئەگەری ئەنجامدانی منشن بۆ هەژمارەکە لە لێدوانەکاندا
 • 📖 زانینی ئایا هەژمارەکە ستۆریی تێدایە یان نەخێر
 
@@ -84,11 +84,11 @@ async def handle_tiktok_query(
 ):
   query = update.message.text.strip()
 
+  # لێرەدا دەتوانین یۆزەر لە پەیامەکە دەربهێنین (بۆ نموونە ئەگەر بەستەر بوو یان یۆزەری ڕووت بوو)
   if "tiktok.com" in query:
-    await update.message.reply_text(
-        "⏳ بەستەرەکەت پێگەیشت، خەریکە زانیارییەکان دەهێنم..."
-    )
-    username = "taylorswift"  # نموونە بۆ بەستەر
+    # لێرە بە شێوازێکی سادە یۆزەر دەردەهێنین یان بە نموونە کار دەکەین
+    # دەتوانیت لە داهاتوودا لینکی تیکتۆک شیکار بکەیت
+    username = "taylorswift"
   else:
     username = query.replace("@", "")
 
@@ -96,27 +96,48 @@ async def handle_tiktok_query(
   querystring = {"uniqueId": username}
   headers = {"x-rapidapi-host": RAPIDAPI_HOST, "x-rapidapi-key": RAPIDAPI_KEY}
 
+  await update.message.reply_text("⏳ چاوەڕێ بە، خەریکە سەرجەم زانیارییەکان دەهێنم...")
+
   try:
     response = requests.get(url, headers=headers, params=querystring)
     data = response.json()
 
+    # دەرهێنانی زانیارییە فراوانەکان لە APIـیەکەوە
     user_info = data.get("userInfo", {})
+    user_detail = user_info.get("user", {})
     stats = user_info.get("stats", {})
 
-    nickname = user_info.get("user", {}).get("nickname", "نەزانراو")
+    # زانیارییە وردەکان
+    nickname = user_detail.get("nickname", "نەزانراو")
+    signature = user_detail.get("signature", "بوونی نییە")
+    sec_uid = user_detail.get("secUid", "نەزانراو")
+    user_id = user_detail.get("id", "نەزانراو")
+    verified = (
+        "✅ بەڵێ (مووثق)" if user_detail.get("verified") else "❌ نەخێر"
+    )
+    region = user_detail.get("region", "نەزانراو")
+
     followers = stats.get("followerCount", 0)
     following = stats.get("followingCount", 0)
     hearts = stats.get("heart", 0)
     videos = stats.get("videoCount", 0)
+    friends = stats.get("friendCount", 0)
 
-    # ڕێکخستنی دەق بە شێوازێک کە یۆزەر بە جوانی `@username` دەردەکەوێت
+    # دروستکردنی پەیامی کۆتایی بە هەموو زانیارییەکانەوە
     result_text = (
-        f"👤 ناوی هەژمار: {nickname}\n"
-        f"🔗 یۆزەر: @{username}\n\n"
-        f"👥 فۆڵۆوەر: {followers:,}\n"
-        f"👤 فۆڵۆوینگ: {following:,}\n"
-        f"❤️ لایک: {hearts:,}\n"
-        f"🎬 ڤیدیۆکان: {videos:,}\n\n"
+        f"📊 **سەرجەم زانیارییەکانی هەژماری تیکتۆک:**\n\n"
+        f"🔹 **ناوی هەژمار:** {nickname}\n"
+        f"🔸 **یۆزەر:** @{username}\n"
+        f"📛 **ئایدی هەژمار (ID):** {user_id}\n"
+        f"🔑 **ئایدی دووەم (SecUid):** {sec_uid}\n"
+        f"✅ **التوثيق (تاییدکراو):** {verified}\n"
+        f"📍 **وڵاتی هەژمار:** {region}\n"
+        f"💭 **بایۆ (Bio):** {signature}\n\n"
+        f"👤 **ژمارەی شوێنکەوتووکان (متابعين):** {followers:,}\n"
+        f"👥 **ژمارەی مضافين (Followings):** {following:,}\n"
+        f"👫 **ژمارەی هاوڕێکان (Friends):** {friends:,}\n"
+        f"❤️️ **کۆی لایکەکان:** {hearts:,}\n"
+        f"🎬 **ژمارەی ڤیدیۆکان:** {videos:,}\n\n"
         f"---------------------------\n"
         f"{OWNERS}\n"
         f"{CHANNEL}"
@@ -126,14 +147,14 @@ async def handle_tiktok_query(
 
   except Exception as e:
     await update.message.reply_text(
-        f"❌ هەڵەیەک ڕوویدا لە وەرگرتنی زانیارییەکان. دیسان هەوڵ بدەوە.\n\n---------------------------\n{OWNERS}\n{CHANNEL}"
+        f"❌ هەڵەیەک ڕوویدا لە هێنانی زانیارییەکان.\n\n---------------------------\n{OWNERS}\n{CHANNEL}"
     )
     print(f"Error: {e}")
 
 
 def main():
-  # تۆکنی بۆتەکەت لێرە دابنە (یان لە Railway Environment Variables)
-  TOKEN = "8868899334:AAGsbrI61_s7hasbA-dvoUD54JZ31dHd6mI"
+  # تۆکنی بۆتەکەت لێرە دابنە
+  TOKEN = "8868899334:AAGsbrI61_s7hasbA-dvoUD54JZ31dHd6mI"  # تۆکنی ڕاستەقینەی خۆت لێرە دابنە
 
   app = ApplicationBuilder().token(TOKEN).build()
 
