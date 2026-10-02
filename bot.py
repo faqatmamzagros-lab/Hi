@@ -25,7 +25,6 @@ logger = logging.getLogger("YuseefB4llamSupremeReportBot")
 TOKEN = '8887162311:AAEBNX4ewNX-__HI-659aiyLffnJHliV_qc'
 bot = telebot.TeleBot(TOKEN, parse_mode=None)
 
-# لێرەدا ئایدییەکە (8887162311) ژ لیستەی ئەدمنان هاتە لادان
 ADMIN_USERNAMES = ["YUSEEF_SURCHI", "B4LLAM"]
 ADMIN_IDS = [7904656691, 7643191802]
 
@@ -59,7 +58,7 @@ def get_db_user(user_id, username="Unknown", first_name="User"):
 # ---------------------------------------------------------------------
 # SECTION 2: ULTIMATE HIGH-POWER MULTI-THREAD REPORT ENGINE
 # ---------------------------------------------------------------------
-def send_supreme_telegram_report(target_username_or_url, reason="spam"):
+def send_supreme_telegram_report(target_username_or_url, reason="general_other"):
     try:
         clean_target = target_username_or_url.replace("https://t.me/", "").replace("@", "").strip()
         report_endpoint = f"https://t.me/{clean_target}"
@@ -292,6 +291,7 @@ def callback_query_router(call):
             types.InlineKeyboardButton("💰 فێڵکاری و سپام", callback_data=f"crime_scam_{package_code}"),
             types.InlineKeyboardButton("🔫 چەکی نایاسایی", callback_data=f"crime_weapon_{package_code}"),
             types.InlineKeyboardButton("🚨 هەڕەشە و تووندوتیژی", callback_data=f"crime_threat_{package_code}"),
+            types.InlineKeyboardButton("🌐 هەموو شتەکی بڵاو دەکاتەوە (Other / General)", callback_data=f"crime_general_{package_code}"),
             types.InlineKeyboardButton("⚡ هێرشی توند (1B Power)", callback_data=f"crime_god_{package_code}"),
             types.InlineKeyboardButton("⬅️ پاشوە", callback_data="back_main")
         )
@@ -299,7 +299,7 @@ def callback_query_router(call):
         bot.edit_message_text(
             chat_id=call.message.chat.id,
             message_id=call.message.message_id,
-            text="📂 ئێستا جۆری تاوانەکە (هۆکاری ڕێپۆرتەکە) دیار بکە:",
+            text="📂 ئەگەر نەزانی چ جۆرە تاوانەکە، دەتوانی بژاردەی **(هەموو شتەکی بڵاو دەکاتەوە)** هەڵبژێری:\n\nئێستا جۆری تاوانەکە دیار بکە:",
             reply_markup=markup
         )
         
