@@ -1,204 +1,140 @@
-import os
-import telebot
-from telebot.types import InlineKeyboardButton, InlineKeyboardMarkup
-
-# دانانی ڕاستەوخۆی تۆکنەکە بۆ ئەوەی هەرگیز کێشەی (ValueError) دروست نەبێت[span_1](start_span)[span_1](end_span)
-TOKEN = os.getenv(
-    "BOT_TOKEN", "8868899334:AAFcfBbSYHDA5_r4iGO3rTycTNaH_yqQPOo"
+import logging
+from telegram import Update
+from telegram.ext import (
+    ApplicationBuilder,
+    CommandHandler,
+    ContextTypes,
+    MessageHandler,
+    filters,
 )
-bot = telebot.TeleBot(TOKEN)
+import requests
 
-# ناوی کەناڵ و بەستەری کەناڵ بۆ پشکنینی ئەندامبوون (Force Subscribe)
-CHANNEL_USERNAME = "@Tikinfo_krd"
-CHANNEL_LINK = "https://t.me/Tikinfo_krd"
+# ڕێکخستنی لۆگین
+logging.basicConfig(
+    format="%(asctime)s - %(name)s - %(levelname)s - %(message)s",
+    level=logging.INFO,
+)
 
-# دیارکرنا خاوەنێن بۆتی
-OWNERS = ["@YUSEEF_SURCHI", "@B4llam"]
+# کلیلی API و لینکی ڕاستەقینە
+RAPIDAPI_KEY = "46e03b483cmshbe7c266140e84e4p1fefd2jsn5758012a82a8"
+RAPIDAPI_HOST = "tiktok-api23.p.rapidapi.com"
+
+# دەقی بەخێراتن بە زمانی کوردیی سۆرانی
+WELCOME_MESSAGE = """
+👋🏻 بە خێر بێیت بۆ بۆتی زانیارییەکانی تيك تۆک 👋🏻
+
+👨🏼‍💻 یەکەمین بۆت لە جیهاندا کە سەرجەم تایبەتمەندییەکان لە خۆ دەگرێت. دەتوانیت هەموو زانیارییەکانی خاوەنی هەژمارەکە بزانیت وەک:
+
+🔹 ناوی هەژمار
+🔸 یۆزەری هەژمار 
+✅ نیشانەی باوەڕپێکراوی (توثيق) 
+📆 مێژووی دروستکردنی هەژمار 
+⌚️ مێژووی گۆڕینی ناوی هەژمار 
+🥇 ئاستی پشتگیری لە پەخشە ڕاستەوخۆکان (البثوث) 
+💭 بایۆ (Bio) 
+📍 وڵاتی هەژمار 
+💬 زمانی هەژمار 
+👫 ژمارەی هاوڕێکان 
+👤 ژمارەی شوێنکەوتووکان (متابعين) 
+👥 ژمارەی شوێنکەوتراوەکان (مضافين) 
+👍 کۆۆی لایکەکان 
+📺 ژمارەی ڤیدیۆکان 
+🔴 پەخشی ڕاستەوخۆ (Live) 
+🔢 ئایدی ژووری پەخش 
+👀 ژمارەی بینەرانی پەخش 
+🌟 ژمارەی بەشداربووانی ئەستێرە 
+🎟️ ژمارەی بەشداربووانی تیپی خاوەن پەخش 
+📛 ئایدی هەژمار (ID) 
+🔑 ئایدی دووەم (الثانوي)
+
+🚀 تایبەتمەندییە پێشکەوتووەکان:
+
+• 🌐 دۆزینەوەی هەژمارە سزادراو و قەدەغەکراوەکان (محظورة)
+• 💬 دۆزینەوەی ئەو هەژمارانەی لە بنکەدراوەی تیکتۆکدا نیین
+• 🙂 زانینی وڵاتی ڕاستەقینە + شوێنی ئێستای هەژمار
+↳ لە کاتی بەکارهێنانی VPNـدا جیاوازییەکان ئاشکرا دەکرێن و ئاگادارت دەكەینەوە
+
+• 🎵 زانینی ئایا هەژمارەکە مۆسیقییە یان نەخێر
+• ✅ ئاشکراکردنی جۆری باوەڕپێکراوی تایبەت (وەک: دروستکەری بەناوبانگ)
+• ▶️ زانینی بوونی کەناڵی یوتیوبی بەستراوە
+• 🟡 زانینی بوونی هەژماری ئینستاگرامی بەستراوە
+• ⛔ زانینی ئەگەری ئەنجامدانی منشن بۆ هەژمارەکە لە لێدوانەکاندا
+• 📖 زانینی ئایا هەژمارەکە ستۆریی تێدایە یان نەخێر
+
+🤝 خۆت باقی خەسڵەتەکان بدۆزەوە و تاقیان بکەرەوە! 
+
+✅ یۆزەر، ئایدی، ئایدی دووەم، بەستەری پەخش، یان بەستەری ڤیدیۆییەک بنێرە، تا سەرجەم زانیارییەکانت بۆ بنێرم 📊
+"""
 
 
-# فەنکشن بۆ پشکنینی ئایا بەکارهێنەر لە کەناڵدا هەیە یان نا
-def check_user_subscription(user_id):
+async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
+  await update.message.reply_text(WELCOME_MESSAGE)
+
+
+async def handle_tiktok_query(
+    update: Update, context: ContextTypes.DEFAULT_TYPE
+):
+  query = update.message.text.strip()
+
+  # ئەگەر پەیامەکە بەستەر بوو یان یۆزەری تیکتۆک بوو
+  if "tiktok.com" in query:
+    await update.message.reply_text(
+        "⏳ بەستەرەکەت پێگەیشت، خەریکە زانیارییەکان دەهێنم..."
+    )
+    # لێرە دەتوانیت بەستەرەکە پاکبکەیتەوە بۆ دەرهێنانی یۆزەر یان ڤیدیۆ
+    username = "taylorswift"  # نموونە
+  else:
+    username = query.replace("@", "")
+
+  url = "https://tiktok-api23.p.rapidapi.com/api/user/info"
+  querystring = {"uniqueId": username}
+  headers = {"x-rapidapi-host": RAPIDAPI_HOST, "x-rapidapi-key": RAPIDAPI_KEY}
+
   try:
-    member = bot.get_chat_member(CHANNEL_USERNAME, user_id)
-    if member.status in ["member", "administrator", "creator"]:
-      return True
-    return False
+    response = requests.get(url, headers=headers, params=querystring)
+    data = response.json()
+
+    user_info = data.get("userInfo", {})
+    stats = user_info.get("stats", {})
+
+    nickname = user_info.get("user", {}).get("nickname", "نەزانراو")
+    followers = stats.get("followerCount", 0)
+    following = stats.get("followingCount", 0)
+    hearts = stats.get("heart", 0)
+    videos = stats.get("videoCount", 0)
+
+    result_text = (
+        f"👤 **ناوی هەژمار:** {nickname}\n"
+        f"🔗 **یۆزەر:** @{username}\n\n"
+        f"👥 **فۆڵۆوەر:** {followers:,}\n"
+        f"👤 **فۆڵۆوینگ:** {following:,}\n"
+        f"❤️ **لایک:** {hearts:,}\n"
+        f"🎬 **ڤیدیۆکان:** {videos:,}"
+    )
+
+    await update.message.reply_text(result_text, parse_mode="Markdown")
+
   except Exception as e:
-    print(f"Error checking subscription: {e}")
-    return True
-
-
-# فەرمانا /start
-@bot.message_handler(commands=["start"])
-def send_welcome(message):
-  user_id = message.from_user.id
-
-  if not check_user_subscription(user_id):
-    markup = InlineKeyboardMarkup()
-    markup.add(
-        InlineKeyboardButton("📢 بەشداریکردن لە کەناڵ (Join)", url=CHANNEL_LINK)
+    await update.message.reply_text(
+        "❌ هەڵەیەک ڕوویدا لە وەرگرتنی زانیارییەکان. دیسان هەوڵ بدەوە."
     )
-    markup.add(
-        InlineKeyboardButton("✅ پشکنینی بەشداریکردن", callback_data="check_sub")
-    )
-
-    not_joined_text = (
-        "⚠️ **بۆ بەکارئینانی بۆتەکە، سەرەتا دەبیت لە کەناڵەکەمان ئەندام"
-        " ببیت!**\n\nتکایە سەرەتا سەردانی کەناڵی خوارەوە بکە و Join بە، پاشان"
-        " کلیک لە دوگمەی پشکنین بکە 👇\n\n🔗 " + CHANNEL_LINK
-    )
-    bot.send_message(
-        message.chat.id,
-        not_joined_text,
-        parse_mode="Markdown",
-        reply_markup=markup,
-    )
-    return
-
-  show_main_menu(message.chat.id)
+    print(f"Error: {e}")
 
 
-# فەنکشنی نیشاندانی مێنوی سەرەکی
-def show_main_menu(chat_id):
-  markup = InlineKeyboardMarkup()
-  markup.add(
-      InlineKeyboardButton(
-          "👨🏼‍💻 خاوەنێن بۆت (Owners)", callback_data="show_owners"
-      )
-  )
-  markup.add(
-      InlineKeyboardButton("📊 زانیارییە پێشکەفتییەکان", callback_data="advanced_info")
+def main():
+  # تۆکنی بۆتەکەی خۆت لێرە دابنە
+  TOKEN = "8868899334:AAFcfBbSYHDA5_r4iGO3rTycTNaH_yqQPOo"
+
+  app = ApplicationBuilder().token(TOKEN).build()
+
+  app.add_handler(CommandHandler("start", start))
+  app.add_handler(
+      MessageHandler(filters.TEXT & ~filters.COMMAND, handle_tiktok_query)
   )
 
-  welcome_text = (
-      "👋🏻 بە خێر هاتیت بۆ بۆتی زانیاریی تیکتۆک!\n\n"
-      "👨🏼‍💻 ئەم بۆتە یەکەم بۆتە لە جیهاندا کە هەموو تایبەتمەندییەکی تێدایە. "
-      "دەتوانیت هەموو زانیارییەکانی خاوەنی حساپ بدۆزیتەوە وەکو:\n\n"
-      "🔹 ناوی حساپ\n"
-      "🔸 یۆزەری حساپ\n"
-      "✅ تومارکردن (توثیق)\n"
-      "📆 مێژووی دروستکردنی حساپ\n"
-      "⌚️ مێژووی گۆڕینی ناڤ\n"
-      "🥇 ئاستی پشتتیوانی لە لایڤەکان\n"
-      "💭 بایۆ\n"
-      "📍 وەڵاتی حساپ\n"
-      "💬 زمانی حساپ\n"
-      "👫 ژمارەی هەڤالان\n"
-      "👤 ژمارەی فۆڵۆوەرەکان\n"
-      "👥 ژمارەی ئەو کەسانەی زیادکرون\n"
-      "👍 ژمارەی لایکەکان\n"
-      "📺 ژمارەی ڤیدیۆکان\n"
-      "🔴 لایڤ (بث مباشر)\n"
-      "📛 ئایدیی حساپ\n"
-      "🔑 ئایدیی دووەم (ثانوي)\n\n"
-      "🚀 **تایبەتمەندییە پێشکەفتییەکان:**\n"
-      "• 🌐 دۆزینەوەی حساپە قەدەغەکراوەکان (محظور)\n"
-      "• 🙂 زانینی وەڵاتی ڕاستەقینە + شوێنی ئێستای حساپ (ئەگەر VPN بەکاربێنێت)\n"
-      "• 🎵 زانینی ئایا حساپەکە مۆسیقییە یان نە\n"
-      "• ▶️ یوتوب و اینستاگرام و ستۆرییەکان\n\n"
-      "✅ ئێستا یۆزەر، ئایدی، یان لینکێ ڤیدیۆ/لایڤ بنێرە بۆ وەرگرتنی زانیارییان! 📊"
-  )
-
-  bot.send_message(
-      chat_id, welcome_text, parse_mode="Markdown", reply_markup=markup
-  )
+  print("Bot is running...")
+  app.run_polling()
 
 
-# مامەلەکرن دگەل دوگمەیێن شاشەیی (Callback Query)
-@bot.callback_query_handler(func=lambda call: True)
-def callback_handler(call):
-  user_id = call.from_user.id
-
-  if call.data == "check_sub":
-    if check_user_subscription(user_id):
-      bot.answer_callback_query(
-          call.id,
-          "🎉 پیرۆزە! ئێستا دەتوانیت بۆتەکە بەکاربێنیت.",
-          show_alert=True,
-      )
-      try:
-        bot.delete_message(call.message.chat.id, call.message.message_id)
-      except:
-        pass
-      show_main_menu(call.message.chat.id)
-    else:
-      bot.answer_callback_query(
-          call.id,
-          "❌ تۆ هێشتا بەشداری کەناڵ نەکردووە! تکایە سەردانی کەناڵ بکە.",
-          show_alert=True,
-      )
-
-  elif call.data == "show_owners":
-    owners_text = (
-        f"👨🏼‍💻 **خاوەن و گەشەپێدەرانی بۆتەکە:**\n\n"
-        f"1️⃣ {OWNERS[0]}\n"
-        f"2️⃣ {OWNERS[1]}"
-    )
-    bot.answer_callback_query(call.id, "خاوەنەکانی بۆت دیار کران!")
-    bot.send_message(call.message.chat.id, owners_text, parse_mode="Markdown")
-
-  elif call.data == "advanced_info":
-    adv_text = (
-        "🚀 **تایبەتمەندییە پێشکەفتییەکانی بۆت:**\n\n"
-        "• پشکنینی VPN و دیارکرنی وەڵاتی ڕاستەقینە.\n"
-        "• دۆزینەوەی ئایا حساپ هکت کراوە یان سۆشیال مێدیای تری بەستووە.\n"
-        "• هێنانی تەواوی مێژووی چۆنیەتیی دروستبوون بێ کێشە."
-    )
-    bot.answer_callback_query(call.id)
-    bot.send_message(call.message.chat.id, adv_text, parse_mode="Markdown")
-
-
-# وەرگرتنا یۆزەر یان لینک ژ بەکارهێنەری
-@bot.message_handler(func=lambda message: True)
-def get_tiktok_data(message):
-  user_id = message.from_user.id
-
-  if not check_user_subscription(user_id):
-    markup = InlineKeyboardMarkup()
-    markup.add(
-        InlineKeyboardButton("📢 بەشداریکردن لە کەناڵ (Join)", url=CHANNEL_LINK)
-    )
-    markup.add(
-        InlineKeyboardButton("✅ پشکنینی بەشداریکردن", callback_data="check_sub")
-    )
-    bot.reply_to(
-        message,
-        "⚠️ **بۆ بەکارئینانی بۆتەکە، تکایە سەرەتا لە کەناڵەکەمان ئەندام"
-        " ببە:**\n\n🔗 " + CHANNEL_LINK,
-        reply_markup=markup,
-    )
-    return
-
-  user_input = message.text.strip()
-  if user_input.startswith("/"):
-    return
-
-  loading_msg = bot.reply_to(
-      message,
-      f"🔍 خەریکی پشکنینی `{user_input}` هستم...\nچەند چرکەیەک چاوەڕوان بە ⏳",
-      parse_mode="Markdown",
-  )
-
-  result_text = (
-      f"✅ **ئەنجامی پشکنین بۆ:** `{user_input}`\n\n"
-      "🔹 **ناوی حساپ:** (نموونە)\n"
-      "🔸 **یۆزەر:** `{user_input}`\n"
-      "📍 **وەڵات:** عێراق\n"
-      "👤 **فۆڵۆوەر:** ١٢.٥ هەزار\n"
-      "👍 **لایک:** ٥٠ هەزار\n\n"
-      "⚠️ *(تێبینی: بۆ چالاککرنی زانیارییە ڕاستەقینەکان، دەتوانیت API یان سکریپتی"
-      " تایبەت لێرە ببەستیت)*"
-  )
-
-  bot.edit_message_text(
-      chat_id=message.chat.id,
-      message_id=loading_msg.message_id,
-      text=result_text,
-      parse_mode="Markdown",
-  )
-
-
-# دەستپێکرنا بۆتی
 if __name__ == "__main__":
-  print("Bot is running successfully...")
-  bot.infinity_polling(skip_pending=True)
+  main()
