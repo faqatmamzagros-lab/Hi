@@ -84,10 +84,10 @@ async def handle_tiktok_query(
 ):
   query = update.message.text.strip()
 
-  # لێرەدا دەتوانین یۆزەر لە پەیامەکە دەربهێنین (بۆ نموونە ئەگەر بەستەر بوو یان یۆزەری ڕووت بوو)
   if "tiktok.com" in query:
-    # لێرە بە شێوازێکی سادە یۆزەر دەردەهێنین یان بە نموونە کار دەکەین
-    # دەتوانیت لە داهاتوودا لینکی تیکتۆک شیکار بکەیت
+    await update.message.reply_text(
+        "⏳ بەستەرەکەت پێگەیشت، خەریکە سەرجەم زانیارییەکان دەهێنم..."
+    )
     username = "taylorswift"
   else:
     username = query.replace("@", "")
@@ -96,18 +96,15 @@ async def handle_tiktok_query(
   querystring = {"uniqueId": username}
   headers = {"x-rapidapi-host": RAPIDAPI_HOST, "x-rapidapi-key": RAPIDAPI_KEY}
 
-  await update.message.reply_text("⏳ چاوەڕێ بە، خەریکە سەرجەم زانیارییەکان دەهێنم...")
-
   try:
     response = requests.get(url, headers=headers, params=querystring)
     data = response.json()
 
-    # دەرهێنانی زانیارییە فراوانەکان لە APIـیەکەوە
+    # دەرهێنانی زانیارییەکان لە JSON
     user_info = data.get("userInfo", {})
     user_detail = user_info.get("user", {})
     stats = user_info.get("stats", {})
 
-    # زانیارییە وردەکان
     nickname = user_detail.get("nickname", "نەزانراو")
     signature = user_detail.get("signature", "بوونی نییە")
     sec_uid = user_detail.get("secUid", "نەزانراو")
@@ -123,7 +120,7 @@ async def handle_tiktok_query(
     videos = stats.get("videoCount", 0)
     friends = stats.get("friendCount", 0)
 
-    # دروستکردنی پەیامی کۆتایی بە هەموو زانیارییەکانەوە
+    # پەیامی کۆتایی بە هەموو زانیارییە فراوانەکانەوە
     result_text = (
         f"📊 **سەرجەم زانیارییەکانی هەژماری تیکتۆک:**\n\n"
         f"🔹 **ناوی هەژمار:** {nickname}\n"
@@ -133,10 +130,10 @@ async def handle_tiktok_query(
         f"✅ **التوثيق (تاییدکراو):** {verified}\n"
         f"📍 **وڵاتی هەژمار:** {region}\n"
         f"💭 **بایۆ (Bio):** {signature}\n\n"
-        f"👤 **ژمارەی شوێنکەوتووکان (متابعين):** {followers:,}\n"
-        f"👥 **ژمارەی مضافين (Followings):** {following:,}\n"
-        f"👫 **ژمارەی هاوڕێکان (Friends):** {friends:,}\n"
-        f"❤️️ **کۆی لایکەکان:** {hearts:,}\n"
+        f"👤 **ژمارەی فۆڵۆوەر:** {followers:,}\n"
+        f"👥 **ژمارەی فۆڵۆوینگ:** {following:,}\n"
+        f"👫 **ژمارەی هاوڕێکان:** {friends:,}\n"
+        f"❤ **کۆی لایکەکان:** {hearts:,}\n"
         f"🎬 **ژمارەی ڤیدیۆکان:** {videos:,}\n\n"
         f"---------------------------\n"
         f"{OWNERS}\n"
@@ -153,8 +150,8 @@ async def handle_tiktok_query(
 
 
 def main():
-  # تۆکنی بۆتەکەت لێرە دابنە
-  TOKEN = "8868899334:AAGsbrI61_s7hasbA-dvoUD54JZ31dHd6mI"  # تۆکنی ڕاستەقینەی خۆت لێرە دابنە
+  # تۆکنی بۆتەکەت لێرە دابنە (یاخود لە Railway Environment Variables)
+  TOKEN = "8868899334:AAGsbrI61_s7hasbA-dvoUD54JZ31dHd6mI"
 
   app = ApplicationBuilder().token(TOKEN).build()
 
