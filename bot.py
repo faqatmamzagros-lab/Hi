@@ -1,4 +1,5 @@
 import logging
+import requests
 from telegram import Update
 from telegram.ext import (
     ApplicationBuilder,
@@ -7,7 +8,6 @@ from telegram.ext import (
     MessageHandler,
     filters,
 )
-import requests
 
 # ڕێکخستنی لۆگین
 logging.basicConfig(
@@ -56,7 +56,7 @@ WELCOME_MESSAGE = f"""
 • 🌐 دۆزینەوەی هەژمارە سزادراو و قەدەغەکراوەکان (محظورة)
 • 💬 دۆزینەوەی ئەو هەژمارانەی لە بنکەدراوەی تیکتۆکدا نیین
 • 🙂 زانینی وڵاتی ڕاستەقینە + شوێنی ئێستای هەژمار
-↳ لە کاتی بەکارهێنانی VPNـدا جیاوازییەکان ئاشکرا دەکرێن و ئاگادارت دەكەینەوە
+↳ لە کاتی بەکارهێنانی VPNـدا جیاوازییەکان ئاشکرا دەکرێن و ئاگادارت دەکەینەوە
 
 • 🎵 زانینی ئایا هەژمارەکە مۆسیقییە یان نەخێر
 • ✅ ئاشکراکردنی جۆری باوەڕپێکراوی تایبەت (وەک: دروستکەری بەناوبانگ)
@@ -69,6 +69,7 @@ WELCOME_MESSAGE = f"""
 
 ✅ یۆزەر، ئایدی، ئایدی دووەم، بەستەری پەخش، یان بەستەری ڤیدیۆییەک بنێرە، تا سەرجەم زانیارییەکانت بۆ بنێرم 📊
 
+---------------------------
 {OWNERS}
 {CHANNEL}
 """
@@ -87,7 +88,7 @@ async def handle_tiktok_query(
     await update.message.reply_text(
         "⏳ بەستەرەکەت پێگەیشت، خەریکە زانیارییەکان دەهێنم..."
     )
-    username = "taylorswift"  # نموونە
+    username = "taylorswift"  # نموونە بۆ بەستەر
   else:
     username = query.replace("@", "")
 
@@ -108,30 +109,31 @@ async def handle_tiktok_query(
     hearts = stats.get("heart", 0)
     videos = stats.get("videoCount", 0)
 
-    # زیادکردنی ناو و کەناڵ لە کۆتایی هەموو پەیامێکی زانیاریدا
+    # ڕێکخستنی دەق بە شێوازێک کە یۆزەر بە جوانی `@username` دەردەکەوێت
     result_text = (
-        f"👤 **ناوی هەژمار:** {nickname}\n"
-        f"🔗 **یۆزەر:** @{username}\n\n"
-        f"👥 **فۆڵۆوەر:** {followers:,}\n"
-        f"👤 **فۆڵۆوینگ:** {following:,}\n"
-        f"❤️ **لایک:** {hearts:,}\n"
-        f"🎬 **ڤیدیۆکان:** {videos:,}\n\n"
+        f"👤 ناوی هەژمار: {nickname}\n"
+        f"🔗 یۆزەر: @{username}\n\n"
+        f"👥 فۆڵۆوەر: {followers:,}\n"
+        f"👤 فۆڵۆوینگ: {following:,}\n"
+        f"❤️ لایک: {hearts:,}\n"
+        f"🎬 ڤیدیۆکان: {videos:,}\n\n"
         f"---------------------------\n"
         f"{OWNERS}\n"
         f"{CHANNEL}"
     )
 
-    await update.message.reply_text(result_text, parse_mode="Markdown")
+    await update.message.reply_text(result_text)
 
   except Exception as e:
     await update.message.reply_text(
-        f"❌ هەڵەیەک ڕوویدا. دیسان هەوڵ بدەوە.\n\n{OWNERS}\n{CHANNEL}"
+        f"❌ هەڵەیەک ڕوویدا لە وەرگرتنی زانیارییەکان. دیسان هەوڵ بدەوە.\n\n---------------------------\n{OWNERS}\n{CHANNEL}"
     )
     print(f"Error: {e}")
 
 
 def main():
-  TOKEN = "8868899334:AAFcfBbSYHDA5_r4iGO3rTycTNaH_yqQPOo"
+  # تۆکنی بۆتەکەت لێرە دابنە (یان لە Railway Environment Variables)
+  TOKEN = "YOUR_TELEGRAM_BOT_TOKEN"
 
   app = ApplicationBuilder().token(TOKEN).build()
 
@@ -146,4 +148,3 @@ def main():
 
 if __name__ == "__main__":
   main()
-
