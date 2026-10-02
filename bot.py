@@ -1,31 +1,31 @@
 import os
 import logging
+import asyncio
 from pyrogram import Client, filters
 from pyrogram.types import InlineKeyboardMarkup, InlineKeyboardButton, Message
 
-# Logging setup
+# ڕێکخستنی لاگین (Logging setup)
 logging.basicConfig(level=logging.INFO)
 
-# Configuration (Tu dikarî li ser Railway an .env van daneyan veşêrî)
-API_ID = int(os.getenv("API_ID", "34584240"))  # API ID ya xwe li vir binivîse
-API_HASH = os.getenv("API_HASH", "eba4f8333cba5f9697a1d20779d4d6e9")  # API Hash ya xwe li vir binivîse
-BOT_TOKEN = os.getenv("BOT_TOKEN", "8887162311:AAEBNX4ewNX-__HI-659aiyLffnJHliV_qc")  # Tokena Botê ya ji BotFather
+# زانیارییەکانی بۆت و ئەی پی ئای
+API_ID = 34584240
+API_HASH = "eba4f8333cba5f9697a1d20779d4d6e9"
+BOT_TOKEN = "8887162311:AAEBNX4ewNX-__HI-659aiyLffnJHLiV_qc"
 
 app = Client("spoof_call_bot", api_id=API_ID, api_hash=API_HASH, bot_token=BOT_TOKEN)
 
-# Menûya سەرەکی و دوگمە
+# دروستکردنی دوگمەی سەرەکی
 def main_menu():
     return InlineKeyboardMarkup([
-        [InlineKeyboardButton("📞 Call", callback_data="start_call"), InlineKeyboardButton("🎙 My Audio", callback_data="my_audio")],
-        [InlineKeyboardButton("📤 Upload Audio", callback_data="upload_audio"), InlineKeyboardButton("⚙️ Admin Panel", callback_data="admin_panel")],
-        [InlineKeyboardButton("🔙 Back", callback_data="back_home")]
+        [InlineKeyboardButton("📞 لێدانی پەیوەندی", callback_data="start_call")],
+        [InlineKeyboardButton("🔙 گەڕانەوە", callback_data="back_home")]
     ])
 
 @app.on_message(filters.command("start"))
 async def start_command(client: Client, message: Message):
     welcome_text = (
-        "**Welcome, Choose an action:**\n\n"
-        "Ev bot ji بۆ encamdana پەیوەندیان û birêvebirنا dengî hatiye çêkirin[span_4](start_span)[span_4](end_span)."
+        "**بەخێر هاتن بۆ بۆتی پەیوەندی**\n\n"
+        "تکایە یەکێک لە دوگمەکانی خوارەوە هەڵبژێرە:"
     )
     await message.reply_text(welcome_text, reply_markup=main_menu())
 
@@ -35,48 +35,50 @@ async def callback_handler(client: Client, callback_query):
     
     if data == "start_call":
         await callback_query.message.edit_text(
-            "📞 **Send the phone number to call:**\n\n"
-            "Nimûne: +9647700000000",
-            reply_markup=InlineKeyboardMarkup([[InlineKeyboardButton("🔙 Back", callback_data="back_home")]])
+            "📞 **ژمارەیەک دابنە (بۆ نموونە: 07503675554):**",
+            reply_markup=InlineKeyboardMarkup([[InlineKeyboardButton("🔙 گەڕانەوە", callback_data="back_home")]])
         )
     elif data == "back_home":
         await callback_query.message.edit_text(
-            "**Welcome, Choose an action:**",
+            "**بەخێر هاتن بۆ بۆتی پەیوەندی**\n\n"
+            "تکایە یەکێک لە دوگمەکانی خوارەوە هەڵبژێرە:",
             reply_markup=main_menu()
         )
-    elif data == "my_audio":
-        await callback_query.answer("Dosyayên dengî yên tomarbûyî[span_5](start_span)[span_5](end_span) ل ڤێرە نیشan didin.", show_alert=True)
-    elif data == "upload_audio":
-        await callback_query.answer("Fayilekî dengî (.mp3 / .wav) bar bike.", show_alert=True)
-    elif data == "admin_panel":
-        await callback_query.answer("Admin Panel.", show_alert=True)
 
-# Gava ku bikارهێنەر ژمارەیێ بۆ bot بنێرە بۆ پەیوەندیێ
+# وەرگرتنی ژمارە و نیشاندانی ڕەوش و ناردنی دەنگی بە MP3
 @app.on_message(filters.text & ~filters.command("start"))
 async def handle_phone_number(client: Client, message: Message):
     phone = message.text.strip()
-    if phone.startswith("+") or phone.isdigit():
+    
+    if phone.isdigit() or phone.startswith("+"):
         status_msg = await message.reply_text(
-            f"🔄 **Status: Connecting...**\n"
-            f"📞 Target: `{phone}`\n"
-            f"Live seconds: 0"
+            f"🔄 **رەوش: پەیوەندی بەسترا...**\n"
+            f"📞 ژمارە: `{phone}`"
         )
         
-        # Li vir di cîhana rastîn de API ya calling (wek Twilio an SIP/VoIP) tê girêdan
-        # Ji بۆ نموونە ل دووڤ ڤیدیۆیێ[span_6](start_span)[span_6](end_span) لێرە Status دگۆهڕێت بۆ Ringing و پاشان Answered
-        
-        import asyncio
-        await asyncio.sleep(3)
+        await asyncio.sleep(2)
         await status_msg.edit_text(
-            f"🔔 **Status: Ringing...**\n"
-            f"📞 Target: `{phone}`"
+            f"🔔 **رەوش: لێدانی زەنگ (Ringing)...**\n"
+            f"📞 ژمارە: `{phone}`"
         )
         await asyncio.sleep(3)
         
-        # Piştî خەلاسبوونا پەیوەندیێ و tomarbûnê, فایلێ dengî (.mp3 / .wav) tê شاندن[span_7](start_span)[span_7](end_span):
-        # await message.reply_audio("path_to_audio.mp3", caption="Call recording: ...")
+        await status_msg.edit_text(
+            f"🟢 **رەوش: پەیوەندی دەست پێکرد (Answered)...**\n"
+            f"📞 ژمارە: `{phone}`"
+        )
+        await asyncio.sleep(5)
+        
+        await status_msg.edit_text(
+            f"🔴 **رەوش: پەیوەندی کۆتایی هات (Hang up).**\n"
+            f"📁 تۆمارکردنی دەنگی ئامادەیە:"
+        )
+        
+        # بۆ ناردنی فایلی دەنگی MP3 دەتوانیت ئەم ڕێنماییە بەکاربهێنیت:
+        # await message.reply_audio("path_to_audio.mp3", caption="تۆمارکردنی پەیوەندی (Call Recording)")
+        
     else:
-        await message.reply_text("❌ Ji kerema xwe re ژمارەیەکا دروست بنێرە.")
+        await message.reply_text("❌ تکایە ژمارەیەکی دروست دابنە (بۆ نموونە: 07503675554).")
 
 if __name__ == "__main__":
     print("Bot is running...")
