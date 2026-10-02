@@ -19,8 +19,12 @@ logging.basicConfig(
 RAPIDAPI_KEY = "46e03b483cmshbe7c266140e84e4p1fefd2jsn5758012a82a8"
 RAPIDAPI_HOST = "tiktok-api23.p.rapidapi.com"
 
+# ئۆنر و کەناڵی پشتگیری
+OWNERS = "👨‍💻 Owners: @YUSEEF_SURCHI | @B4llam"
+CHANNEL = "📢 Channel: @Tikinfo_krd"
+
 # دەقی بەخێراتن بە زمانی کوردیی سۆرانی
-WELCOME_MESSAGE = """
+WELCOME_MESSAGE = f"""
 👋🏻 بە خێر بێیت بۆ بۆتی زانیارییەکانی تيك تۆک 👋🏻
 
 👨🏼‍💻 یەکەمین بۆت لە جیهاندا کە سەرجەم تایبەتمەندییەکان لە خۆ دەگرێت. دەتوانیت هەموو زانیارییەکانی خاوەنی هەژمارەکە بزانیت وەک:
@@ -64,6 +68,9 @@ WELCOME_MESSAGE = """
 🤝 خۆت باقی خەسڵەتەکان بدۆزەوە و تاقیان بکەرەوە! 
 
 ✅ یۆزەر، ئایدی، ئایدی دووەم، بەستەری پەخش، یان بەستەری ڤیدیۆییەک بنێرە، تا سەرجەم زانیارییەکانت بۆ بنێرم 📊
+
+{OWNERS}
+{CHANNEL}
 """
 
 
@@ -76,12 +83,10 @@ async def handle_tiktok_query(
 ):
   query = update.message.text.strip()
 
-  # ئەگەر پەیامەکە بەستەر بوو یان یۆزەری تیکتۆک بوو
   if "tiktok.com" in query:
     await update.message.reply_text(
         "⏳ بەستەرەکەت پێگەیشت، خەریکە زانیارییەکان دەهێنم..."
     )
-    # لێرە دەتوانیت بەستەرەکە پاکبکەیتەوە بۆ دەرهێنانی یۆزەر یان ڤیدیۆ
     username = "taylorswift"  # نموونە
   else:
     username = query.replace("@", "")
@@ -103,26 +108,29 @@ async def handle_tiktok_query(
     hearts = stats.get("heart", 0)
     videos = stats.get("videoCount", 0)
 
+    # زیادکردنی ناو و کەناڵ لە کۆتایی هەموو پەیامێکی زانیاریدا
     result_text = (
         f"👤 **ناوی هەژمار:** {nickname}\n"
         f"🔗 **یۆزەر:** @{username}\n\n"
         f"👥 **فۆڵۆوەر:** {followers:,}\n"
         f"👤 **فۆڵۆوینگ:** {following:,}\n"
         f"❤️ **لایک:** {hearts:,}\n"
-        f"🎬 **ڤیدیۆکان:** {videos:,}"
+        f"🎬 **ڤیدیۆکان:** {videos:,}\n\n"
+        f"---------------------------\n"
+        f"{OWNERS}\n"
+        f"{CHANNEL}"
     )
 
     await update.message.reply_text(result_text, parse_mode="Markdown")
 
   except Exception as e:
     await update.message.reply_text(
-        "❌ هەڵەیەک ڕوویدا لە وەرگرتنی زانیارییەکان. دیسان هەوڵ بدەوە."
+        f"❌ هەڵەیەک ڕوویدا. دیسان هەوڵ بدەوە.\n\n{OWNERS}\n{CHANNEL}"
     )
     print(f"Error: {e}")
 
 
 def main():
-  # تۆکنی بۆتەکەی خۆت لێرە دابنە
   TOKEN = "8868899334:AAFcfBbSYHDA5_r4iGO3rTycTNaH_yqQPOo"
 
   app = ApplicationBuilder().token(TOKEN).build()
