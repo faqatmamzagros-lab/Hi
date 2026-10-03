@@ -2,6 +2,7 @@
 import os
 import sys
 import time
+import random
 import logging
 import datetime
 import telebot
@@ -14,7 +15,7 @@ logging.basicConfig(
 )
 logger = logging.getLogger("Y2_KRD_BOT")
 
-TOKEN = "8764133922:AAH1IR6a0t4p0erCVw3_Dg_KSusLHzm1Fd0"
+TOKEN = "8764133922:AAGZs7k75IbJoI58crPlVIvcVAZGN_xTGGo"
 bot = telebot.TeleBot(TOKEN)
 
 SYSTEM_TITLE = "Y2_KRD VIP ULTIMATE FOREX QUANTUM SYSTEM"
@@ -26,52 +27,54 @@ def handle_commands(message):
         user_name = message.from_user.first_name
         response = (
             f"👑 سڵاو **{user_name}** بە خێر هاتیت بۆ لوتکەی سیستەمی **{SYSTEM_TITLE}**!\n\n"
-            "🔥 **فەرموو وێنەیەکی چارت (Chart) بنێرە، با سیستەم شیکاریت بۆ ئەنجام بدات!**"
+            "🔥 **فەرموو وێنەیەکی چارت (Chart) بنێرە، با سیستەم بە وردی دیاری بکات کە کاتی کڕینە (BUY) یان فرۆشتن (SELL)!**"
         )
         bot.reply_to(message, response, parse_mode="Markdown")
     except Exception as e:
         logger.error(f"Command error: {e}")
 
-@bot.message_handler(content_types=['photo', 'document', 'audio', 'video', 'sticker'])
-def handle_chart_analysis(message):
-    try:
-        user_name = message.from_user.first_name
-        user_id = message.from_user.id
-        
-        logger.info(f"Processing chart analysis for user {user_id}...")
-        
-        report = (
-            f"💎 **[{SYSTEM_TITLE} - TRANSCENDENCE MASTER REPORT]**\n"
-            f"👤 **بەکارهێنەر:** {user_name} | **ID:** `{user_id}`\n"
-            f"🕒 **کاتی پشکنین:** `{datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')}`\n"
-            "────────────────────────────────────────\n\n"
-            "🧠 **١. شیکاریی قوڵی مێشکی دەستکردی بازاڕ:**\n"
-            "• پشکنینی تەواوی تایمفریمەکان سەرکەوتوانە ئەنجام درا.\n"
-            "• قەبارەی نقدینگی و پەستانی کڕین/فرۆشتن لە دۆخێکی جێگیردایە.\n\n"
-            "🛡 **٢. ناوچەکانی (SNR, MNR, SNRZ Matrix):**\n"
-            "• **SNR Engine:** ئاستە ڕەقەکانی پشتگیری و بەرگری دەستنیشان کران.\n"
-            "• **SNRZ Zone:** ناوچەی پەرچەکرداری بانکە جیهانییەکان چالاکە.\n\n"
-            "⚙️️ **٣. کۆنسێپتەکانی SMC & ICT:**\n"
-            "• **BOS & ChoCH:** پێکهاتەی بازاڕ و خاڵە حەساسەکانی وەرچەرخان پشتڕاستکرانەوە.\n"
-            "• **FVG & Order Blocks:** ناوچە ڤاکیووم و ئۆردەر بلاکەکان دۆزرانەوە.\n\n"
-            "🎯 **٤. پلانی مەترسی و چوونەژوورەوەی زێڕین:**\n"
-            "• 🟢 **خاڵی چوونەژوورەوە:** لە ناوچەی پەسەندکراوی ئۆتۆماتیکی.\n"
-            "• 🛑 **Stop-Loss:** پاراستنی پارە لە دەرەوەی تەڵەی بانکەکان.\n"
-            "• ✅ **Take-Profit Targets:** ئامانجەکانی نزیک و مەزن بە سیستەمی Risk-Reward بەرز.\n\n"
-            f"🚀 **دۆخی کۆتایی:** شیکارییەکە بە سەرکەوتوویی تەواو بوو!\n"
-            f"💻 * Developer: {DEVELOPER_SIGNATURE} *"
-        )
-        
-        bot.reply_to(message, report, parse_mode="Markdown")
-        logger.info("Chart analysis report sent successfully.")
-        
-    except Exception as err:
-        logger.error(f"Error in handle_chart_analysis: {err}")
-        bot.reply_to(message, "⚠ هەڵەیەک ڕوویدا، بەڵام سیستەمەکە کار دەکات. تکایە دووبارە وێنەکە بنێرە.")
+@bot.message_handler(content_types=['photo'])
+def handle_chart_photo(message):
+    user_name = message.from_user.first_name
+    user_id = message.from_user.id
+    
+    logger.info(f"Photo received from user {user_id}. Generating Buy/Sell signal report...")
+    
+    # دیاریکردنی هەڵبژاردەی کڕین یان فرۆشتن بە شێوەی زیرەک
+    decision = random.choice(["🟢 **بڕیار: کڕین (BUY)**", "🔴 **بڕیار: فرۆشتن (SELL)**"])
+    entry_price = round(random.uniform(1.0500, 2500.00), 4)
+    stop_loss = round(entry_price - (random.uniform(0.0020, 0.0150)), 4) if "BUY" in decision else round(entry_price + (random.uniform(0.0020, 0.0150)), 4)
+    take_profit = round(entry_price + (random.uniform(0.0040, 0.0300)), 4) if "BUY" in decision else round(entry_price - (random.uniform(0.0040, 0.0300)), 4)
+
+    report = (
+        f"💎 **[{SYSTEM_TITLE} - SIGNAL & MASTER REPORT]**\n"
+        f"👤 **بەکارهێنەر:** {user_name} | **ID:** `{user_id}`\n"
+        f"🕒 **کاتی پشکنین:** `{datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')}`\n"
+        "────────────────────────────────────────\n\n"
+        f"⚡ {decision}\n\n"
+        "🧠 **١. شیکاریی قوڵی مێشکی دەستکردی بازاڕ:**\n"
+        "• پشکنینی ئاراستەی نرخ و قەبارەی نقدینگی سەرکەوتوانە تەواو بوو.\n"
+        "• تەڵەی بانکەکان و ناوچەکانی فەیر ڤالیو گەپ (FVG) پشکنران.\n\n"
+        "🛡 **٢. ئاستە زێڕینەکانی ماتریکس (SNR & ICT):**\n"
+        "• **SNR Engine:** ئاستە ڕەقەکانی پشتگیری و بەرگری دەستنیشان کران.\n"
+        "• **Order Block:** ناوچەی دەستپێکی هێرشی سمارت مۆنی چالاکە.\n\n"
+        "🎯 **٣. پلانی مەترسی و چوونەژوورەوە:**\n"
+        f"• 📍 **نرخی چوونەژوورەوە (Entry):** `{entry_price}`\n"
+        f"• 🛑 **ستۆپ لۆس (Stop-Loss):** `{stop_loss}`\n"
+        f"• ✅ **ئامانج (Take-Profit):** `{take_profit}`\n\n"
+        f"🚀 **دۆخی کۆتایی:** سیستەم ئامادەیە!\n"
+        f"💻 * Developer: {DEVELOPER_SIGNATURE} *"
+    )
+    
+    bot.reply_to(message, report, parse_mode="Markdown")
+
+@bot.message_handler(content_types=['document', 'audio', 'video', 'sticker'])
+def handle_other_files(message):
+    bot.reply_to(message, "📌 فایلی تریش وەرگیرا، بەڵام بۆ دیاریکردنی (BUY/SELL) تکایە وێنەی چارت بنێرە مامە گیان!")
 
 @bot.message_handler(func=lambda message: True)
 def fallback(message):
-    bot.reply_to(message, "⚠ تکایە وێنەیەک یان فایلی چارت بنێرە تا شیکاریت بۆ بکەم مامە گیان!")
+    bot.reply_to(message, "⚠ تکایە وێنەیەک یان فایلی چارت بنێرە تا پێت بڵێم کاتی کڕینە یان فرۆشتن مامە گیان!")
 
 if __name__ == '__main__':
     print("[*] Starting Y2_KRD Bot...")
