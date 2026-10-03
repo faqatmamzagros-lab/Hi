@@ -313,8 +313,10 @@ if __name__ == '__main__':
     
     while True:
         try:
-            logger.info("Starting bot absolute-transcendence polling connection for Void core...")
-            bot.infinity_polling(timeout=60, long_polling_timeout=60)
+            logger.info("Removing active webhooks and starting bot absolute-transcendence polling...")
+            bot.remove_webhook()
+            time.sleep(1)
+            bot.infinity_polling(timeout=60, long_polling_timeout=60, skip_pending=True)
         except Exception as connection_error:
             logger.error(f"Critical polling exception encountered: {connection_error}")
             logger.info("Attempting automatic reconnection in 5 seconds...")
