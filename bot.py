@@ -321,3 +321,4 @@ if __name__ == '__main__':
             logger.error(f"Critical polling exception encountered: {connection_error}")
             logger.info("Attempting automatic reconnection in 5 seconds...")
             time.sleep(5)
+
