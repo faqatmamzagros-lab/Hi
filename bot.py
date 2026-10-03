@@ -3,7 +3,7 @@ import telebot
 from telebot import types
 
 # توکێنەی بۆتەکەی خۆت لێرە دانێ یان لە Railway وەکو Environment Variable دابنە
-TOKEN = os.getenv('BOT_TOKEN', 'YOUR_BOT_TOKEN_HERE')
+TOKEN = os.getenv('BOT_TOKEN', '8764133922:AAGZs7k75IbJoI58crPlVIvcVAZGN_xTGGo')
 bot = telebot.TeleBot(TOKEN)
 
 # 1. فرمانی /start بۆ بەخێرهاتنی بەکارهێنەر بە نیکی ناوی خۆی
