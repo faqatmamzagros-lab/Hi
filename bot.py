@@ -5,6 +5,7 @@ import telebot
 TOKEN = "8764133922:AAGZs7k75IbJoI58crPlVIvcVAZGN_xTGGo"
 bot = telebot.TeleBot(TOKEN)
 
+# 1. بەخێرهاتن بە /start
 @bot.message_handler(commands=['start'])
 def send_welcome(message):
     user_name = message.from_user.first_name
@@ -19,7 +20,8 @@ def send_welcome(message):
     )
     bot.reply_to(message, welcome_text, parse_mode="Markdown")
 
-@bot.message_handler(content_types=['photo'])
+# 2. وەرگرتنی وێنە و وەڵامدانەوەی خێرا (ڕاستەوخۆ وەڵام دەداتەوە)
+@bot.message_handler(content_types=['photo', 'document'])
 def handle_chart_image(message):
     user_name = message.from_user.first_name
     username = message.from_user.username
@@ -45,8 +47,10 @@ def handle_chart_image(message):
         "• ✅ **Take-Profit 2:** 4015-4021 (Resistance سەرەکی)\n\n"
         "🔵 **متمانە:** مامناوەند - پالشتی، یەک جار و نیم"
     )
+    
     bot.reply_to(message, analysis_report, parse_mode="Markdown")
 
+# 3. وەڵامدانەوە بۆ نامەی ئاسایی
 @bot.message_handler(func=lambda message: True)
 def default_response(message):
     bot.reply_to(message, "⚠️ تکایە وێنەیەکی چارتێ (Chart) بنێرە دا سیستەمێ شیکاریا فۆریکس ب بڕیار و وردەکاریی تەواو بۆ تە بنێرم!")
