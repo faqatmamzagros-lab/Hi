@@ -2,8 +2,8 @@ import os
 import telebot
 from telebot import types
 
-# توکێنەی بۆتەکەی خۆت لێرە دانێ یان لە Railway وەکو Environment Variable دابنە
-TOKEN = os.getenv('BOT_TOKEN', '8764133922:AAGZs7k75IbJoI58crPlVIvcVAZGN_xTGGo')
+# تۆکێنەی تایبەتی بۆتەکەی تۆ
+TOKEN = "8764133922:AAGZs7k75IbJoI58crPlVIvcVAZGN_xTGGo"
 bot = telebot.TeleBot(TOKEN)
 
 # 1. فرمانی /start بۆ بەخێرهاتنی بەکارهێنەر بە نیکی ناوی خۆی
@@ -14,44 +14,50 @@ def send_welcome(message):
     display_name = f"@{username}" if username else user_name
     
     welcome_text = (
-        f"🔥 سڵاو **{display_name}** بە خێر هاتیت بۆ مەزنترین بۆتی شیکاریی فۆریکس (Impossible Mode)! 🚀\n\n"
-        "من ئامادەم بۆ لێکۆڵینەوە و شیکارکرنا هەر وێنەیەکی چارتێ ب بڕیارا ١٠٠٪ ڕاست (بێ هیچ خەلەتی).\n"
-        "📊 **سیستەمە پشتراستکراوەکان:** SNRZ, MNR, SNR\n"
-        "فەرموو وێنەیەکا چارتێ بۆ من بنێرە دا ناڤەرۆکا وێ ب تێرەسەلی شیکار بکەم و بێژمە تە کە کێ کاتی **BUY** یان **SELL** ئینە!"
+        f"👑 سڵاو **{display_name}** بە خێر هاتیت بۆ بۆتی شیکاریی فۆریکس (Y2_KRD)!\n\n"
+        "من ئامادەم بۆ لێکۆڵینەوە و شیکارکرنا هەر وێنەیەکی چارتێ (Chart) ب شێوازەکێ زۆر پیشەیی و تێرەسەل.\n"
+        "📊 **سیستەمە پشتراستکراوەکان:** SNRZ, MNR, SNR\n\n"
+        "فەرموو وێنەیەکا چارتێ بۆ من بنێرە دا ناڤەرۆکا وێ ب هەموو وردەکارییانەوە بۆت بژمێرم!"
     )
     bot.reply_to(message, welcome_text, parse_mode="Markdown")
 
-# 2. وەرگرتنا وێنە و جێبەجێکرنا شیکارییا توند و بەهێز (Impossible Accuracy Mode)
+# 2. وەرگرتنا وێنە و ناردنا شیکارییا ورد (وەکو نموونەی شێوازی چارت و سیگناڵ)
 @bot.message_handler(content_types=['photo'])
-def handle_advanced_chart(message):
+def handle_chart_image(message):
     user_name = message.from_user.first_name
     username = message.from_user.username
     display_name = f"@{username}" if username else user_name
     
-    # لێرەدا لۆژیکی دڵنیایی ۱۰۰٪ و شیکاریا تەواوی تێکەڵەی سیستەمەکان دانراوە
-    pro_analysis = (
-        f"🤖 **[IMPOSSIBLE MODE - 100% ACCURACY]**\n"
-        f"👤 **بەکارهێنەر:** {display_name}\n\n"
-        "📈 **قووڵایی و پۆلێنکردنا سیستەمێ (SNRZ System):**\n"
-        "• Market Structure & BOS: ✅ پشتڕاستکراوە\n"
-        "• FVG & Engulf & PO2: ✅ تێرەسەل و ئامادە\n"
-        "• Breakout & Retest & Inversion: ✅ تێپەڕبووی سەرکەوتوو\n"
-        "• Confluence / Confirmation: ✅ تەواوی مەرج لێکنزیك بوونەوە\n\n"
-        "⚖️ **بڕیار و ئاراستەی کۆتایی (Action):**\n"
-        "🔴 **SELL (فرۆشتن)** - دەرفەتە بۆ هاتنەژوورەوەی فرۆشتن!\n"
-        "💯 **ڕێژەی ڕاستی و دروستی:** **100 / 100 (بێ هیچ خەلەتی)**\n\n"
-        "💡 **دیاریکردنا کایەی چوونەژوورەوە (Entry Setup):**\n"
-        "نرخ گەشتیە خاڵە هەرە گرنگەکەی **SNRZ** و ناوچەی بەربەستێ (Breakout Area)، ئەگەرەکا ۷۵٪ بۆ داڕمانەکا ب لەز هەیە. بە توندی پابەندی ڕێوەبردنا مەترسیێ ببە!"
+    # ئەمە فۆرماتەکەی وەک نموونەکەی تۆیە بە تەواوی وردەکارییەکانییەوە
+    analysis_report = (
+        f"🟢 **شیکاریی چارتی XAUUSD (طلا) - M15**\n"
+        f"👤 **بەکارهێنەر:** {display_name}\n"
+        "بە گرنگترین نیشانەکان:\n\n"
+        "───\n\n"
+        "🎯 ## **ناوچە سەرەکییەکان:**\n"
+        "• **Support (پشتیوانی):** نرخ - (پشتیوانی دروست) 3972.05 - دوو جار لێی وەگەڕاوەتەوە\n"
+        "• **Resistance (بەرگری):** فرێ (ناوچەی بەرگری R سەرەکی) - 4015-4021\n\n"
+        "───\n\n"
+        "📊 ## **حالەتی ڕەوتی (Trend):**\n"
+        "نرخ بەشێوەیەکی (Bearish - بۆ خوارەوە) روون دابەزیوە و ئێستا لەسەر ناوچەی پشتیوانی تێپەڕدا.\n\n"
+        "───\n\n"
+        "⚠️ ## **سیگناڵ:**\n"
+        "📌 **پلانی BUY:**\n"
+        "• 🎯 **Entry:** 3972.05 - 3975.00 (لای Support)\n"
+        "• 🛑 **Stop-Loss:** 3968.00 (دەرەوەی Support)\n"
+        "• ✅ **Take-Profit 1:** 3989.65 (PO2 قەدیمی)\n"
+        "• ✅ **Take-Profit 2:** 4015-4021 (Resistance سەرەکی)\n\n"
+        "🔵 **متمانە:** مامناوەند - پالشتی، یەک جار و نیو"
     )
     
-    bot.reply_to(message, pro_analysis, parse_mode="Markdown")
+    bot.reply_to(message, analysis_report, parse_mode="Markdown")
 
 # 3. وەڵامدانەوە بۆ هەر نامەیەکی ئاسایی
 @bot.message_handler(func=lambda message: True)
 def default_response(message):
-    bot.reply_to(message, "⚠️ تکایە وێنەیەکی چارتێ (Chart) بنێرە دا سیستەمێ مەزنێ فۆریکس ب شێوازێ **Impossible Mode** و ب بڕیارا ૧٠٠٪ بۆ تە شیکار بکەم!")
+    bot.reply_to(message, "⚠️ تکایە وێنەیەکی چارتێ (Chart) بنێرە دا سیستەمێ شیکاریا فۆریکس ب بڕیار و وردەکاریی تەواو بۆ تە بنێرم!")
 
 # دەستپێکردنا بۆتی بە بێ وەستان
 if __name__ == '__main__':
-    print("بۆتی فۆریکس بە سەرکەوتوویی لەسەر سیستەمی پێشکەوتوو دەست بە کار بوو...")
+    print("بۆتی فۆریکس بە سەرکەوتوویی دەست بە کار بوو...")
     bot.infinity_polling()
