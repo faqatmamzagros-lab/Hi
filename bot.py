@@ -1,16 +1,14 @@
-import logging
-from telegram import Update
-from telegram.ext import ApplicationBuilder, ContextTypes, CommandHandler, MessageHandler, filters
+import os
+import telebot
 
-# Setup logging
-logging.basicConfig(format='%(asctime)s - %(name)s - %(levelname)s - %(message)s', level=logging.INFO)
-
-# Yu Token
+# تۆکێنەی بۆتەکەی تۆ
 TOKEN = "8764133922:AAGZs7k75IbJoI58crPlVIvcVAZGN_xTGGo"
+bot = telebot.TeleBot(TOKEN)
 
-async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    user_name = update.effective_user.first_name
-    username = update.effective_user.username
+@bot.message_handler(commands=['start'])
+def send_welcome(message):
+    user_name = message.from_user.first_name
+    username = message.from_user.username
     display_name = f"@{username}" if username else user_name
     
     welcome_text = (
@@ -19,11 +17,12 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
         "📊 **سیستەمە پشتراستکراوەکان:** SNRZ, MNR, SNR\n\n"
         "فەرموو وێنەیەکا چارتێ بۆ من بنێرە دا ناڤەرۆکا وێ ب هەموو وردەکارییانەوە بۆت بژمێرم!"
     )
-    await context.bot.send_message(chat_id=update.effective_chat.id, text=welcome_text, parse_mode="Markdown")
+    bot.reply_to(message, welcome_text, parse_mode="Markdown")
 
-async def handle_photo(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    user_name = update.effective_user.first_name
-    username = update.effective_user.username
+@bot.message_handler(content_types=['photo'])
+def handle_chart_image(message):
+    user_name = message.from_user.first_name
+    username = message.from_user.username
     display_name = f"@{username}" if username else user_name
     
     analysis_report = (
@@ -46,17 +45,12 @@ async def handle_photo(update: Update, context: ContextTypes.DEFAULT_TYPE):
         "• ✅ **Take-Profit 2:** 4015-4021 (Resistance سەرەکی)\n\n"
         "🔵 **متمانە:** مامناوەند - پالشتی، یەک جار و نیم"
     )
-    await context.bot.send_message(chat_id=update.effective_chat.id, text=analysis_report, parse_mode="Markdown")
+    bot.reply_to(message, analysis_report, parse_mode="Markdown")
 
-async def default_response(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    await context.bot.send_message(chat_id=update.effective_chat.id, text="⚠️ تکایە وێنەیەکی چارتێ (Chart) بنێرە دا سیستەمێ شیکاریا فۆریکس ب بڕیار و وردەکاریی تەواو بۆ تە بنێرم!")
+@bot.message_handler(func=lambda message: True)
+def default_response(message):
+    bot.reply_to(message, "⚠️ تکایە وێنەیەکی چارتێ (Chart) بنێرە دا سیستەمێ شیکاریا فۆریکس ب بڕیار و وردەکاریی تەواو بۆ تە بنێرم!")
 
 if __name__ == '__main__':
-    application = ApplicationBuilder().token(TOKEN).build()
-    
-    application.add_handler(CommandHandler('start', start))
-    application.add_handler(MessageHandler(filters.PHOTO, handle_photo))
-    application.add_handler(MessageHandler(filters.TEXT & (~filters.COMMAND), default_response))
-    
     print("بۆتی فۆریکس بە سەرکەوتوویی دەست بە کار بوو...")
-    application.run_polling()
+    bot.infinity_polling()
