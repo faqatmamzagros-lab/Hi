@@ -14,7 +14,7 @@ logging.basicConfig(
 )
 logger = logging.getLogger("Y2_KRD_BOT")
 
-TOKEN = "8764133922:AAGZs7k75IbJoI58crPlVIvcVAZGN_xTGGo"
+TOKEN = "8764133922:AAH1IR6a0t4p0erCVw3_Dg_KSusLHzm1Fd0"
 bot = telebot.TeleBot(TOKEN)
 
 SYSTEM_TITLE = "Y2_KRD VIP ULTIMATE FOREX QUANTUM SYSTEM"
