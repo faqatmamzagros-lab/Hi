@@ -9,12 +9,13 @@ from telegram.ext import (
     ContextTypes,
 )
 
-# تووکن و ئایدیی خاوەنەکانی بۆت (Owners)
+# Towoken o id-i khawanezani bot (Owners)
 TOKEN = "8868138985:AAGJ8_duPPPQXhBSf1DnQlImeUO-WRHSmMA"
+BOT_USERNAME = "SYSTEM_EYE_OF_TELEGRAM_BOT"  #irak luga apnar bot-er asli username (bina @)
 OWNERS = [7904656691, 7643191802]
-OWNER_TAGS = "@Y2_KRD و @B4llam"
+OWNER_TAGS = "@Y2_KRD o @B4llam"
 
-# زانیاریی بەکارهێنەران لە داتابەیسەکەدا
+# Zaniyari-i bakarheneran la database-ekada
 users_db = {}
 
 logging.basicConfig(
@@ -41,8 +42,8 @@ def check_user_active(user_id):
 async def start(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
     user = update.effective_user
     user_id = user.id
-    nickname = user.first_name if user.first_name else "بەکارهێنەر"
-    username = f"@{user.username}" if user.username else "نەدیار"
+    nickname = user.first_name if user.first_name else "Bakarhener"
+    username = f"@{user.username}" if user.username else "Nedyar"
 
     if user_id not in users_db:
         users_db[user_id] = {
@@ -56,39 +57,39 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
     user_data = users_db[user_id]
     is_active = check_user_active(user_id)
 
-    user_link = f"https://t.me/your_bot_username?start={user_id}"
+    user_link = f"https://t.me/{BOT_USERNAME}?start={user_id}"
 
     if is_active:
         welcome_message = (
-            f"✨ سڵاو بەڕێز **{nickname}**، بە خێر هاتیت بۆ بۆتی فەرمی! 🌟[span_1](start_span)[span_1](end_span)\n\n"
-            f"🎉 اشتراکی تۆ ئێستا لە حاڵەتی چالاکدایە[span_2](start_span)[span_2](end_span)!\n"
-            f"🔗 گرێبەست (Link) یان کۆدی QR تایبەت بە کەناڵی تۆ:[span_3](start_span)[span_3](end_span)\n"
-            f"👉 `https://t.me/joinchannel_qr_link`[span_4](start_span)[span_4](end_span)\n\n"
-            f"📌 **زانیارییەکانی اکاونتی تۆ:**[span_5](start_span)[span_5](end_span)\n"
-            f"🆔 ئایدی (ID): `{user_id}`[span_6](start_span)[span_6](end_span)\n"
-            f"🌐 گرێبەستی تایبەت (Safari / مۆبایل): `{user_link}`[span_7](start_span)[span_7](end_span)\n"
-            f"💰 باڵانسی تۆ: `{user_data['balance']}` دینار[span_8](start_span)[span_8](end_span)\n\n"
-            f"👑 خاوەنەکانی بۆت: {OWNER_TAGS}[span_9](start_span)[span_9](end_span)"
+            f"✨ Slaw barez **{nickname}**[span_4](start_span)[span_4](end_span), ba xer hatit bo boti fermi! 🌟[span_5](start_span)[span_5](end_span)\n\n"
+            f"🎉 Eshtraki to esta la halati chalakdaye[span_6](start_span)[span_6](end_span)!\n"
+            f"🔗 Girebest (Link) yan kodi QR taybet ba kanali to:[span_7](start_span)[span_7](end_span)\n"
+            f"👉 `https://t.me/joinchannel_qr_link`[span_8](start_span)[span_8](end_span)\n\n"
+            f"📌 **Zaniyari-i-akanuti to:**[span_9](start_span)[span_9](end_span)\n"
+            f"🆔 Aydi (ID): `{user_id}`[span_10](start_span)[span_10](end_span)\n"
+            f"🌐 Girebesti taybet (Safari / mobayl): `{user_link}`[span_11](start_span)[span_11](end_span)\n"
+            f"💰 Balansi to: `{user_data['balance']}` dinar[span_12](start_span)[span_12](end_span)\n\n"
+            f"👑 Xawanekani bot: {OWNER_TAGS}[span_13](start_span)[span_13](end_span)"
         )
     else:
         welcome_message = (
-            f"✨ سڵاو بەڕێز **{nickname}**، بە خێر هاتیت بۆ بۆتی فەرمی! 🌟\n\n"
-            f"❌ بۆ بینینی QR Code و بەکارهێنانی بۆتەکە، پێویستە اشتڕاکێک بکڕیت.\n"
-            f"💎 تکایە یەکێک لە اشتڕاکەکان هەڵبژێرە بۆ بەردەوامبوون.\n\n"
-            f"📌 **زانیارییەکانی اکاونتی تۆ:**\n"
-            f"🆔 ئایدی (ID): `{user_id}`\n"
-            f"🌐 گرێبەستی تایبەت (Safari / مۆبایل): `{user_link}`\n"
-            f"💰 باڵانسی تۆ: `{user_data['balance']}` دینار\n\n"
-            f"👑 خاوەنەکانی بۆت: {OWNER_TAGS}"
+            f"✨ Slaw barez **{nickname}**[span_14](start_span)[span_14](end_span), ba xer hatit bo boti fermi! 🌟\n\n"
+            f"❌ Bo binini QR Code o bakarhenani boteke, pewiste eshtrarek bkrit.\n"
+            f"💎 Takaya yakek la eshtrakean halbjere bo bardewambun.\n\n"
+            f"📌 **Zaniyari-i-akanuti to:**[span_15](start_span)[span_15](end_span)\n"
+            f"🆔 Aydi (ID): `{user_id}`[span_16](start_span)[span_16](end_span)\n"
+            f"🌐 Girebesti taybet (Safari / mobayl): `{user_link}`[span_17](start_span)[span_17](end_span)\n"
+            f"💰 Balansi to: `{user_data['balance']}` dinar[span_18](start_span)[span_18](end_span)\n\n"
+            f"👑 Xawanekani bot: {OWNER_TAGS}[span_19](start_span)[span_19](end_span)"
         )
 
     keyboard = [
-        [InlineKeyboardButton("💳 کڕینی اشتڕاکەکان", callback_data="buy_subs")],
-        [InlineKeyboardButton("👤 ژمارە و زانیارییەکانم", callback_data="my_info")],
+        [InlineKeyboardButton("💳 Krini eshtrakean", callback_data="buy_subs")],
+        [InlineKeyboardButton("👤 Zhmara o zaniyariyekanm", callback_data="my_info")],
     ]
 
     if user_id in OWNERS:
-        keyboard.append([InlineKeyboardButton("⚙️ پەنێڵی بەڕێوەبەری (Admin Panel)", callback_data="admin_panel")])
+        keyboard.append([InlineKeyboardButton("⚙️ Peneli berreweberi (Admin Panel)", callback_data="admin_panel")])
 
     reply_markup = InlineKeyboardMarkup(keyboard)
 
@@ -108,36 +109,36 @@ async def button_handler(update: Update, context: ContextTypes.DEFAULT_TYPE) -> 
     if data == "my_info":
         user = query.from_user
         user_data = users_db[user_id]
-        user_link = f"https://t.me/your_bot_username?start={user_id}"
-        sub_status = user_data["subscription"] if check_user_active(user_id) else "هیچ اشتڕاکێک نییە"
+        user_link = f"https://t.me/{BOT_USERNAME}?start={user_id}"
+        sub_status = user_data["subscription"] if check_user_active(user_id) else "Hich eshtrarek niye"
         info_text = (
-            f"👤 **زانیارییەکانی اکاونت و مۆبایلی تۆ:**\n\n"
-            f"▫️ ناوی خوازراو (Nickname): {user.first_name}\n"
-            f"🆔 ئایدی (ID): `{user.id}`\n"
-            f"🔗 یۆزەرسەید: @{user.username if user.username else 'نەدیار'}\n"
-            f"🌐 گرێبەستی تایبەت: `{user_link}`\n"
-            f"💰 باڵانس: `{user_data['balance']}` دینار\n"
-            f"📦 اشتراکی چالاک: {sub_status}"
+            f"👤 **Zaniyari-i-akanut o mobayli to:**\n\n"
+            f"▫️ Nawi xwazraw (Nickname): {user.first_name}\n"
+            f"🆔 Aydi (ID): `{user.id}`\n"
+            f"🔗 Yozerset: @{user.username if user.username else 'Nedyar'}\n"
+            f"🌐 Girebesti taybet: `{user_link}`\n"
+            f"💰 Balans: `{user_data['balance']}` dinar\n"
+            f"📦 Eshtraki chalak: {sub_status}"
         )
-        keyboard = [[InlineKeyboardButton("🔙 گەڕانەوە (Back)", callback_data="back_start")]]
+        keyboard = [[InlineKeyboardButton("🔙 Garandewe (Back)", callback_data="back_start")]]
         await query.edit_message_text(info_text, reply_markup=InlineKeyboardMarkup(keyboard), parse_mode="Markdown")
 
     elif data == "buy_subs":
         sub_text = (
-            "💎 **لیستی اشتڕاکەکان و نرخی ئەوان:**\n\n"
-            "1️⃣ اشتراکی 1 مانگ ⬅️ 5,000 دینار\n"
-            "2️⃣ اشتراکی 6 مانگ ⬅️ 15,000 دینار\n"
-            "3️⃣ اشتراکی 1 ساڵ ⬅️ 25,000 دینار\n"
-            "4️⃣ اشتراکی بۆ هەتا هەتایێ ⬅️ 50,000 دینار\n\n"
-            "💬 بۆ کڕین و زیادکردنی باڵانس، سەردانی هەردوو خاوەنی بۆت بکەن:\n"
-            "👑 @Y2_KRD یان @B4llam"
+            "💎 **Listi eshtrakean o narxi ewan:**\n\n"
+            "1️⃣ Eshtraki 1 mang ⬅️ 5,000 dinar\n"
+            "2️⃣ Eshtraki 6 mang ⬅️️ 15,000 dinar\n"
+            "3️⃣ Eshtraki 1 sal ⬅️ 25,000 dinar\n"
+            "4️⃣ Eshtraki bo hata hetaye ⬅️ 50,000 dinar\n\n"
+            "💬 Bo krin o ziyadkardni balans, sardani hardwu xawani bot bkan:\n"
+            "👑 @Y2_KRD yan @B4llam"
         )
         keyboard = [
-            [InlineKeyboardButton("🛒 کڕینی 1 مانگ (5,000)", callback_data="sub_1m")],
-            [InlineKeyboardButton("🛒 کڕینی 6 مانگ (15,000)", callback_data="sub_6m")],
-            [InlineKeyboardButton("🛒 کڕینی 1 ساڵ (25,000)", callback_data="sub_1y")],
-            [InlineKeyboardButton("🛒 کڕینی بۆ هەتا هەتایێ (50,000)", callback_data="sub_life")],
-            [InlineKeyboardButton("🔙 گەڕانەوە (Back)", callback_data="back_start")]
+            [InlineKeyboardButton("🛒 Krini 1 mang (5,000)", callback_data="sub_1m")],
+            [InlineKeyboardButton("🛒 Krini 6 mang (15,000)", callback_data="sub_6m")],
+            [InlineKeyboardButton("🛒 Krini 1 sal (25,000)", callback_data="sub_1y")],
+            [InlineKeyboardButton("🛒 Krini bo hata hetaye (50,000)", callback_data="sub_life")],
+            [InlineKeyboardButton("🔙 Garandewe (Back)", callback_data="back_start")]
         ]
         await query.edit_message_text(sub_text, reply_markup=InlineKeyboardMarkup(keyboard), parse_mode="Markdown")
 
@@ -152,23 +153,23 @@ async def button_handler(update: Update, context: ContextTypes.DEFAULT_TYPE) -> 
             users_db[user_id]["sub_expiry"] = get_baghdad_time() + timedelta(days=days)
             users_db[user_id]["subscription"] = data
             
-            success_text = "✅ پەیامی سەرکەوتوویی! اشتراکی تۆ بە سەرکەوتوویی چالاک بوو و باڵانسی تۆ سفر/نوێ کرایەوە."
-            keyboard = [[InlineKeyboardButton("🔙 گەڕانەوە (Back)", callback_data="back_start")]]
+            success_text = "✅ Peyami sarkewtuwi! Eshtraki to ba sarkewtuwi chalak bow o balansi to safar/nwe krayewe."
+            keyboard = [[InlineKeyboardButton("🔙 Garandewe (Back)", callback_data="back_start")]]
             await query.edit_message_text(success_text, reply_markup=InlineKeyboardMarkup(keyboard))
         else:
-            fail_text = f"❌ باڵانسی تۆ بەس نییە! پێویستە باڵانسی تۆ بگاتە {cost} دیناران. تکایە سەردانی @Y2_KRD یان @B4llam بکە."
-            keyboard = [[InlineKeyboardButton("🔙 گەڕانەوە (Back)", callback_data="back_start")]]
+            fail_text = f"❌ Balansi to bas niye! Pewiste balansi to bgate {cost} dinaran. Takaya sardani @Y2_KRD yan @B4llam bkan."
+            keyboard = [[InlineKeyboardButton("🔙 Garandewe (Back)", callback_data="back_start")]]
             await query.edit_message_text(fail_text, reply_markup=InlineKeyboardMarkup(keyboard))
 
     elif data == "admin_panel" and user_id in OWNERS:
         admin_text = (
-            "⚙️ **پەنێڵی بەڕێوەبەری (Admin Panel):**\n\n"
-            "🔹 بۆ زیادکردنی باڵانس بۆ هەر بەکارهێنەرێک، ئەم فەرمانە لە چاتدا بەکار بهێنە:\n"
-            "`/addbalance [ID] [بڕ]`\n\n"
-            "🔹 بۆ بینینی گشت کەسەکانی کە اشتراکیان کڕیوە و ماوەی بەسەرچوونیان:\n"
+            "⚙️ **Peneli berreweberi (Admin Panel):**\n\n"
+            "🔹 Bo ziyadkardni balans bo har bakarhenerik, am fermane la chatda bakar henene:\n"
+            "`/addbalance [ID] [br]`\n\n"
+            "🔹 Bo binini gst kesakani ke eshtrakian kriwe o mawei basarchuniayan:\n"
             "/subscribers"
         )
-        keyboard = [[InlineKeyboardButton("🔙 گەڕانەوە (Back)", callback_data="back_start")]]
+        keyboard = [[InlineKeyboardButton("🔙 Garandewe (Back)", callback_data="back_start")]]
         await query.edit_message_text(admin_text, reply_markup=InlineKeyboardMarkup(keyboard), parse_mode="Markdown")
 
     elif data == "back_start":
@@ -177,7 +178,7 @@ async def button_handler(update: Update, context: ContextTypes.DEFAULT_TYPE) -> 
 async def add_balance(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
     user_id = update.effective_user.id
     if user_id not in OWNERS:
-        await update.message.reply_text("❌ تۆ بەڕێوەبەر نییەتی!")
+        await update.message.reply_text("❌ To berreweber niyeti!")
         return
 
     try:
@@ -187,26 +188,26 @@ async def add_balance(update: Update, context: ContextTypes.DEFAULT_TYPE) -> Non
 
         if target_id in users_db:
             users_db[target_id]["balance"] += amount
-            await update.message.reply_text(f"✅ بڕی {amount} دینار بە سەرکەوتوویی بۆ ئایدی: `{target_id}` زیاد کرا.", parse_mode="Markdown")
+            await update.message.reply_text(f"✅ Bri {amount} dinar ba sarkewtuwi bo aydi: `{target_id}` ziyad kra.", parse_mode="Markdown")
         else:
-            await update.message.reply_text("❌ ئەم ئایدییە لە سیستەمدا نییە (پێویستە بەکارهێنەر پێشتر /start لە بۆتەکەدا لێدابێت).")
+            await update.message.reply_text("❌ Am aydi-ye la systemda niye (pewiste bakarhener peshter /start la botekada ledabit).")
     except Exception:
-        await update.message.reply_text("⚠️ هەڵە لە نووسینی فەرماندا! بەکار بهێنە: `/addbalance [ID] [AMOUNT]`", parse_mode="Markdown")
+        await update.message.reply_text("⚠️ Hala la nusini fermanda! Bakar henene: `/addbalance [ID] [AMOUNT]`", parse_mode="Markdown")
 
 async def list_subscribers(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
     user_id = update.effective_user.id
     if user_id not in OWNERS:
         return
 
-    text = "📋 **لیستی گشت بەکارهێنەرانی اشتڕاککڕاو:**\n\n"
+    text = "📋 **Listi gst bakarhenerani eshtraknakraw:**\n\n"
     count = 0
     for uid, udata in users_db.items():
         if check_user_active(uid):
             count += 1
-            text += f"👤 {udata['nickname']} (ID: `{uid}`)\n📦 جۆر: {udata['subscription']}\n⏳ ماوە: {udata['sub_expiry']}\n\n"
+            text += f"👤 {udata['nickname']} (ID: `{uid}`)\n📦 Jor: {udata['subscription']}\n⏳ Mawa: {udata['sub_expiry']}\n\n"
     
     if count == 0:
-        text += "هیچ کەسێک اشتراکی نییە."
+        text += "Hich kesik eshtraki niye."
 
     await update.message.reply_text(text, parse_mode="Markdown")
 
@@ -218,7 +219,7 @@ def main() -> None:
     app.add_handler(CommandHandler("subscribers", list_subscribers))
     app.add_handler(CallbackQueryHandler(button_handler))
 
-    print("بۆت دەستپێکرد و بە تەواوی کار دەکات...")
+    print("Bot destpıkrd o ba tawawi kar dekat...")
     app.run_polling()
 
 if __name__ == "__main__":
