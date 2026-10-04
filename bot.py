@@ -17,7 +17,7 @@ BOT_USERNAME = "SYSTEM_EYE_OF_TELEGRAM_BOT"  # یۆزەرسەیدێ بۆتا ب�
 OWNERS = [7904656691, 7643191802]
 OWNER_TAGS = "@Y2_KRD و @B4llam"
 
-# داتابەیسا بەکارهێنەران و دۆخی چاوەڕوانی بۆ ناردنی کەناڵ
+# داتابەیسا بەکارهێنەران و چاوەڕوانی بۆ ناردنی کەناڵ
 users_db = {}
 waiting_for_channel = {}
 
@@ -64,37 +64,36 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
     if is_active:
         welcome_message = (
             f"✨ سڵاو بەڕێز **{nickname}**، بە خێر هاتیت بۆ بۆتی فەرمی! 🚀\n\n"
-            f"💎 اشتراکی تۆ ئێستا لە حاڵەتی چالاکدایە و دەتوانیت تەواوی خزمەتگوزارییەکان بەکار بهێنیت!\n\n"
+            f"💎 اشتراکی تۆ ئێستا لە حاڵەتی چالاکدایە و دەتوانیت خزمەتگوزارییەکان بەکار بهێنیت!\n\n"
             f"📌 **زانیارییەکانی ئەکاونتی تۆ:**\n"
             f"🆔 ئایدی (ID): `{user_id}`\n"
             f"🌐 لینکی تایبەت: `{user_link}`\n"
             f"💰 باڵانسی تۆ: `{user_data['balance']}` دینار\n\n"
             f"👑 خاوەنەکانی بۆت: {OWNER_TAGS}"
         )
+        # تەنها ١ دوگمە بۆ دروستکردنی QR Code و ١ دوگمە بۆ پڕۆفایل و زانیارییەکان
         keyboard = [
-            [InlineKeyboardButton("⚡️ دروستکردنی QR Code (١)", callback_data="make_qr_1"),
-             InlineKeyboardButton("⚡️ دروستکردنی QR Code (٢)", callback_data="make_qr_2")],
-            [InlineKeyboardButton("⚡️ دروستکردنی QR Code (٣)", callback_data="make_qr_3"),
-             InlineKeyboardButton("⚡️ دروستکردنی QR Code (٤)", callback_data="make_qr_4")],
+            [InlineKeyboardButton("⚡️ دروستکردنی QR Code", callback_data="make_qr_single")],
             [InlineKeyboardButton("👤 ژمارە و زانیارییەکانم", callback_data="my_info")]
         ]
     else:
         welcome_message = (
             f"✨ سڵاو بەڕێز **{nickname}**، بە خێر هاتیت بۆ بۆتی فەرمی! 🚀\n\n"
             f"❌ اشتراکی تۆ بەسەرچووە یان هیچ اشتڕاکێکت نییە.\n"
-            f"⚡️ تکایە لە دوگمەی خوارەوە جۆرێک لە اشتڕاکەکان هەڵبژێرە بۆ کڕین و چالاککردنەوەی بۆتەکە!\n\n"
+            f"⚡️ تکایە لە دوگمەی خوارەوە جۆرێک لە اشتڕاکەکان هەڵبژێرە بۆ کڕین!\n\n"
             f"📌 **زانیارییەکانی ئەکاونتی تۆ:**\n"
             f"🆔 ئایدی (ID): `{user_id}`\n"
             f"🌐 لینکی تایبەت: `{user_link}`\n"
             f"💰 باڵانسی تۆ: `{user_data['balance']}` دینار\n\n"
             f"👑 خاوەنەکانی بۆت: {OWNER_TAGS}"
         )
+        # تەنها ٢ دوگمە بۆ بەکارهێنەری ئاسایی
         keyboard = [
-            [InlineKeyboardButton("💎 کڕینی اشتڕاک (لیست)", callback_data="buy_subs")],
+            [InlineKeyboardButton("🛒 کڕینی اشتڕاک (لیست)", callback_data="buy_subs")],
             [InlineKeyboardButton("👤 ژمارە و زانیارییەکانم", callback_data="my_info")],
         ]
 
-    # ئەگەر هەر یەکێک لە ئایدییەکانی خاوەن بوو، پەنێڵی بەڕێوەبەری بۆ زیاد دەبێت
+    # پەنێڵی بەڕێوەبەری تەنها بۆ خاوەنەکان لەسەر هەردوو ئایدییەکە دەردەکەوێت
     if user_id in OWNERS:
         keyboard.append([InlineKeyboardButton("⚙️ پەنێڵی بەڕێوەبەری (Admin Panel)", callback_data="admin_panel")])
 
@@ -133,11 +132,11 @@ async def button_handler(update: Update, context: ContextTypes.DEFAULT_TYPE) -> 
     elif data == "buy_subs":
         sub_text = (
             "💎 **لیستی اشتڕاکەکان و نرخی ئەوان:**\n\n"
-            "👇 تکایە جۆرێک هەڵبژێرە بۆ کڕین (پارەکە یەکسەر دەبڕرێت):\n\n"
+            "👇 تکایە یەکێک لەم اشتڕاکانە هەڵبژێرە بۆ کڕین:\n\n"
             "1️⃣ اشتراکی ١ مانگ ⬅️ ٥,٠٠٠ دینار\n"
             "2️⃣ اشتراکی ٦ مانگ ⬅️ ١٥,٠٠٠ دینار\n"
             "3️⃣ اشتراکی ١ ساڵ ⬅️ ٢٥,٠٠٠ دینار\n"
-            "4️⃣ اشتراکی بۆ هەتا هەتایێ ⬅️️ ٥٠,٠٠٠ دینار\n\n"
+            "4️⃣ اشتراکی بۆ هەتا هەتایێ ⬅ ٥٠,٠٠٠ دینار\n\n"
             "💬 بۆ زیادکردنی باڵانس، سەردانی خاوەنەکانی بۆت بکەن:\n"
             "👑 @Y2_KRD یان @B4llam"
         )
@@ -156,7 +155,7 @@ async def button_handler(update: Update, context: ContextTypes.DEFAULT_TYPE) -> 
         cost = prices[data]
         
         if users_db[user_id]["balance"] >= cost:
-            users_db[user_id]["balance"] -= cost  # پارە دەبڕرێت و باڵانس دەبێتە سفر یان پاشماوە
+            users_db[user_id]["balance"] -= cost  # پارە دەبڕرێت لە باڵانس
             days = durations[data]
             users_db[user_id]["sub_expiry"] = get_baghdad_time() + timedelta(days=days)
             users_db[user_id]["subscription"] = data
@@ -164,7 +163,6 @@ async def button_handler(update: Update, context: ContextTypes.DEFAULT_TYPE) -> 
             success_text = (
                 f"✅ **پەیامی سەرکەوتوویی!**\n\n"
                 f"🎉 اشتراکی تۆ بە سەرکەوتوویی کڕرا و چالاک بوو!\n"
-                f"⚡️ ئێستا بۆتەکە بە تەواوی بۆت کار دەکات.\n\n"
                 f"💰 باڵانسی ماوەی تۆ: `{users_db[user_id]['balance']}` دینار"
             )
             keyboard = [[InlineKeyboardButton("🔙 گەڕانەوە بۆ سەرەتا", callback_data="back_start")]]
@@ -178,12 +176,12 @@ async def button_handler(update: Update, context: ContextTypes.DEFAULT_TYPE) -> 
             keyboard = [[InlineKeyboardButton("🔙 گەڕانەوە بۆ لیستی اشتڕاکەکان", callback_data="buy_subs")]]
             await query.edit_message_text(fail_text, reply_markup=InlineKeyboardMarkup(keyboard), parse_mode="Markdown")
 
-    elif data.startswith("make_qr_"):
+    elif data == "make_qr_single":
         if check_user_active(user_id):
             waiting_for_channel[user_id] = True
             prompt_text = (
-                f"📥 **بۆ دروستکردنی QR Code ({data[-1]}):**\n\n"
-                f"💬 تکایە **ناوی کەناڵ** یان **لینکەکەی** لێرە بنووسە تاوەکو ماسکی لەسەر دابنێین و بۆت دروست بکەین:"
+                "📥 **دروستکردنی QR Code و ماسکی کەناڵ:**\n\n"
+                "💬 تکایە ناوی کەناڵ یان لینکەکەی لێرە بنووسە:"
             )
             keyboard = [[InlineKeyboardButton("🔙 گەڕانەوە", callback_data="back_start")]]
             await query.edit_message_text(prompt_text, reply_markup=InlineKeyboardMarkup(keyboard), parse_mode="Markdown")
@@ -193,7 +191,7 @@ async def button_handler(update: Update, context: ContextTypes.DEFAULT_TYPE) -> 
     elif data == "admin_panel" and user_id in OWNERS:
         admin_text = (
             "⚙️ **پەنێڵی بەڕێوەبەری (Admin Panel):**\n\n"
-            "🔹 بۆ زیادکردنی باڵانس بۆ هەر بەکارهێنەرێک، ئەم فەرمانە لە چاتدا بەکار بهێنە:\n"
+            "🔹 بۆ زیادکردنی باڵانس بۆ هەر بەکارهێنەرێک:\n"
             "`/addbalance [ID] [بڕ]`\n\n"
             "🔹 بۆ بینینی گشت کەسێن اشتراک کڕین:\n"
             "/subscribers"
@@ -208,19 +206,16 @@ async def button_handler(update: Update, context: ContextTypes.DEFAULT_TYPE) -> 
 async def handle_message(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
     user_id = update.effective_user.id
     if user_id in waiting_for_channel and waiting_for_channel[user_id]:
-        channel_name = update.message.text
+        channel_input = update.message.text
         waiting_for_channel[user_id] = False
         
-        # دروستکردنی لینکی تایبەت بەو کەسە و کەناڵەکەی
-        personal_qr_link = f"https://t.me/{BOT_USERNAME}?start=qr_{user_id}"
-        
+        # گەڕاندنەوەی هەمان لینکی پێدراو بە بێ زیادکردنی هیچ شتێکی زیاتر، لەگەڵ ماسک لەسەر کەناڵەکە
         response_text = (
-            f"✨ **QR Code و ماسکی کەناڵ بە سەرکەوتوویی دروست کرا!**\n\n"
-            f"📢 ناوی کەناڵ: `{channel_name}`\n"
-            f"👤 خاوەنی ئەکاونت: `ID: {user_id}`\n\n"
-            f"🔗 **لینک و QR Codeـی تایبەتی تۆ:**\n"
-            f"`{personal_qr_link}`\n\n"
-            f"⚡️ هەر کەسێک لەسەر ئەم لینکە join ببێت، ڕاستەوخۆ دەچێتە ناو کەناڵەکەت و بۆتەکە لەسەر ئایدیی خۆت کار دەکات!"
+            f"✨ **QR Code و ماسکی کەناڵ بۆت دروست کرا!**\n\n"
+            f"📢 کەناڵ: `{channel_input}`\n\n"
+            f"🔗 **لینکەکە:**\n"
+            f"`{channel_input}`\n\n"
+            f"⚡️ تێبینی: هەر کەسێک لەسەر این لینکە join ببێت، داوای ژمارەی تەلەفۆن و کۆد دەکات تاوەکو ڕاستەوخۆ بە ئەکاونتی خۆی بچێتە ناو بۆتەوە و کار بکات."
         )
         keyboard = [[InlineKeyboardButton("🔙 گەڕانەوە بۆ سەرەتا", callback_data="back_start")]]
         await update.message.reply_text(response_text, reply_markup=InlineKeyboardMarkup(keyboard), parse_mode="Markdown")
@@ -270,7 +265,7 @@ def main() -> None:
     app.add_handler(CallbackQueryHandler(button_handler))
     app.add_handler(MessageHandler(filters.TEXT & ~filters.COMMAND, handle_message))
 
-    print("بۆت دەستپێکرد و بە شێوازێکی زۆر پێشکەوتوو کار دەکات...")
+    print("بۆت بە سەرکەوتوویی کەوتە کار...")
     app.run_polling()
 
 if __name__ == "__main__":
