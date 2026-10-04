@@ -50,16 +50,12 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
     await check_expiry(user_id)
     user_data = users_db[user_id]
 
-    # پشکنینی کاتی خۆڕایی (شەڤ لە سەعات 11 تا 12ی شەو بە کاتی بەغدا)
-    now = get_baghdad_time()
-    is_free_hour = 23 <= now.hour < 24
-
     user_link = f"https://t.me/your_bot_username?start={user_id}"
 
-    if is_free_hour or user_data["subscription"] or user_id in OWNERS:
+    if user_data["subscription"] or user_id in OWNERS:
         welcome_message = (
             f"✨ سڵاو بەڕێز **{nickname}**، بە خێر هاتیت بۆ بۆتی فەرمی! 🌟\n\n"
-            f"🎉 سەعاتی خۆڕاییی شەڤ یان اشتراکی تۆ ئێستا چالاکە!\n"
+            f"🎉 اشتراکی تۆ ئێستا لە حاڵەتی چالاکدایە!\n"
             f"🔗 گرێبەست (Link) یان کۆدی QR تایبەت بە کەناڵی تۆ:\n"
             f"👉 `https://t.me/joinchannel_qr_link`\n\n"
             f"📌 **زانیارییەکانی اکاونتی تۆ:**\n"
@@ -70,9 +66,9 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
         )
     else:
         welcome_message = (
-            f"✨ سڵاو بەڕێز **{nickname}**، بە خێر هاتیت! 🌟\n\n"
-            f"❌ تۆ ناتوانیت کۆدی QR ببینیت چونکە اشتراکت نییە یان باڵانست سفرە.\n"
-            f"⏳ چاوەڕێی سەعاتی خۆڕایی بکە (شەڤ لە سەعات 11 تا 12) یان اشتڕاکێک بکڕە.\n\n"
+            f"✨ سڵاو بەڕێز **{nickname}**، بە خێر هاتیت بۆ بۆتی فەرمی! 🌟\n\n"
+            f"❌ بۆ بینینی QR Code و بەکارهێنانی بۆتەکە، پێویستە اشتڕاکێک بکڕیت.\n"
+            f"💎 تکایە یەکێک لە اشتڕاکەکان هەڵبژێرە بۆ بەردەوامبوون.\n\n"
             f"📌 **زانیارییەکانی اکاونتی تۆ:**\n"
             f"🆔 ئایدی (ID): `{user_id}`\n"
             f"🌐 گرێبەستی تایبەت (Safari / مۆبایل): `{user_link}`\n"
@@ -146,7 +142,7 @@ async def button_handler(update: Update, context: ContextTypes.DEFAULT_TYPE) -> 
         cost = prices[data]
         
         if users_db[user_id]["balance"] >= cost:
-            users_db[user_id]["balance"] -= cost  # پارە سفر دەبێتەوە یان کەم دەبێت
+            users_db[user_id]["balance"] -= cost
             days = durations[data]
             users_db[user_id]["sub_expiry"] = get_baghdad_time() + timedelta(days=days)
             users_db[user_id]["subscription"] = data
@@ -222,4 +218,3 @@ def main() -> None:
 
 if __name__ == "__main__":
     main()
-ID: 7643191802
