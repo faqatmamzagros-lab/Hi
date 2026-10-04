@@ -22,7 +22,7 @@ from telegram.ext import (
 )
 
 # تووکن و ئایدیی خاوەنەکانی بۆت (Owners)
-TOKEN = "8868138985:AAGJ8_duPPPQXhBSf1DnQlImeUO-WRHSmMA"
+TOKEN = "8868138985:AAEs0BnrQX9QxyvY_hgFeEqAOsrxk2iCJ1M"
 BOT_USERNAME = "SYSTEM_EYE_OF_TELEGRAM_BOT"  # یۆزەرسەیدێ بۆتا خۆ ل ڤێرە بنڤیسە بێ @
 OWNERS = [7904656691, 7643191802]
 OWNER_TAGS = "@Y2_KRD و @B4llam"
