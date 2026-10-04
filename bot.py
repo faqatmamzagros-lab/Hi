@@ -25,12 +25,18 @@ def get_baghdad_time():
     tz = pytz.timezone("Asia/Baghdad")
     return datetime.now(tz)
 
-async def check_expiry(user_id):
-    if user_id in users_db and users_db[user_id]["sub_expiry"]:
-        now = get_baghdad_time()
-        if now > users_db[user_id]["sub_expiry"]:
-            users_db[user_id]["subscription"] = None
-            users_db[user_id]["sub_expiry"] = None
+def check_user_active(user_id):
+    if user_id in OWNERS:
+        return True
+    if user_id in users_db:
+        sub_expiry = users_db[user_id].get("sub_expiry")
+        if sub_expiry:
+            if get_baghdad_time() < sub_expiry:
+                return True
+            else:
+                users_db[user_id]["subscription"] = None
+                users_db[user_id]["sub_expiry"] = None
+    return False
 
 async def start(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
     user = update.effective_user
@@ -47,22 +53,22 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
             "nickname": nickname
         }
     
-    await check_expiry(user_id)
     user_data = users_db[user_id]
+    is_active = check_user_active(user_id)
 
     user_link = f"https://t.me/your_bot_username?start={user_id}"
 
-    if user_data["subscription"] or user_id in OWNERS:
+    if is_active:
         welcome_message = (
-            f"✨ سڵاو بەڕێز **{nickname}**، بە خێر هاتیت بۆ بۆتی فەرمی! 🌟\n\n"
-            f"🎉 اشتراکی تۆ ئێستا لە حاڵەتی چالاکدایە!\n"
-            f"🔗 گرێبەست (Link) یان کۆدی QR تایبەت بە کەناڵی تۆ:\n"
-            f"👉 `https://t.me/joinchannel_qr_link`\n\n"
-            f"📌 **زانیارییەکانی اکاونتی تۆ:**\n"
-            f"🆔 ئایدی (ID): `{user_id}`\n"
-            f"🌐 گرێبەستی تایبەت (Safari / مۆبایل): `{user_link}`\n"
-            f"💰 باڵانسی تۆ: `{user_data['balance']}` دینار\n\n"
-            f"👑 خاوەنەکانی بۆت: {OWNER_TAGS}"
+            f"✨ سڵاو بەڕێز **{nickname}**، بە خێر هاتیت بۆ بۆتی فەرمی! 🌟[span_1](start_span)[span_1](end_span)\n\n"
+            f"🎉 اشتراکی تۆ ئێستا لە حاڵەتی چالاکدایە[span_2](start_span)[span_2](end_span)!\n"
+            f"🔗 گرێبەست (Link) یان کۆدی QR تایبەت بە کەناڵی تۆ:[span_3](start_span)[span_3](end_span)\n"
+            f"👉 `https://t.me/joinchannel_qr_link`[span_4](start_span)[span_4](end_span)\n\n"
+            f"📌 **زانیارییەکانی اکاونتی تۆ:**[span_5](start_span)[span_5](end_span)\n"
+            f"🆔 ئایدی (ID): `{user_id}`[span_6](start_span)[span_6](end_span)\n"
+            f"🌐 گرێبەستی تایبەت (Safari / مۆبایل): `{user_link}`[span_7](start_span)[span_7](end_span)\n"
+            f"💰 باڵانسی تۆ: `{user_data['balance']}` دینار[span_8](start_span)[span_8](end_span)\n\n"
+            f"👑 خاوەنەکانی بۆت: {OWNER_TAGS}[span_9](start_span)[span_9](end_span)"
         )
     else:
         welcome_message = (
@@ -99,12 +105,11 @@ async def button_handler(update: Update, context: ContextTypes.DEFAULT_TYPE) -> 
     data = query.data
     user_id = query.from_user.id
 
-    await check_expiry(user_id)
-
     if data == "my_info":
         user = query.from_user
         user_data = users_db[user_id]
         user_link = f"https://t.me/your_bot_username?start={user_id}"
+        sub_status = user_data["subscription"] if check_user_active(user_id) else "هیچ اشتڕاکێک نییە"
         info_text = (
             f"👤 **زانیارییەکانی اکاونت و مۆبایلی تۆ:**\n\n"
             f"▫️ ناوی خوازراو (Nickname): {user.first_name}\n"
@@ -112,7 +117,7 @@ async def button_handler(update: Update, context: ContextTypes.DEFAULT_TYPE) -> 
             f"🔗 یۆزەرسەید: @{user.username if user.username else 'نەدیار'}\n"
             f"🌐 گرێبەستی تایبەت: `{user_link}`\n"
             f"💰 باڵانس: `{user_data['balance']}` دینار\n"
-            f"📦 اشتراکی چالاک: {user_data['subscription'] or 'هیچ اشتڕاکێک نییە'}"
+            f"📦 اشتراکی چالاک: {sub_status}"
         )
         keyboard = [[InlineKeyboardButton("🔙 گەڕانەوە (Back)", callback_data="back_start")]]
         await query.edit_message_text(info_text, reply_markup=InlineKeyboardMarkup(keyboard), parse_mode="Markdown")
@@ -196,7 +201,7 @@ async def list_subscribers(update: Update, context: ContextTypes.DEFAULT_TYPE) -
     text = "📋 **لیستی گشت بەکارهێنەرانی اشتڕاککڕاو:**\n\n"
     count = 0
     for uid, udata in users_db.items():
-        if udata["subscription"]:
+        if check_user_active(uid):
             count += 1
             text += f"👤 {udata['nickname']} (ID: `{uid}`)\n📦 جۆر: {udata['subscription']}\n⏳ ماوە: {udata['sub_expiry']}\n\n"
     
