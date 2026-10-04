@@ -60,32 +60,37 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
 
     if is_active:
         welcome_message = (
-            f"✨ سڵاو بەڕێز **{nickname}**، بە خێر هاتیت بۆ بۆتی فەرمی! 🌟\n\n"
-            f"🎉 اشتراکی تۆ ئێستا لە حاڵەتی چالاکدایە!\n"
-            f"🔗 لینکا دروستکرنا QR Code و لینکا تایبەت یا کەناڵی تۆ:\n"
-            f"👉 `https://t.me/joinchannel_qr_link`\n\n"
+            f"✨ سڵاو بەڕێز **{nickname}**، بە خێر هاتیت بۆ بۆتی فەرمی! 🚀\n\n"
+            f"💎 اشتراکی تۆ ئێستا لە حاڵەتی چالاکدایە و دەتوانیت تەواوی خزمەتگوزارییەکان بەکار بهێنیت!\n\n"
             f"📌 **زانیارییەکانی ئەکاونتی تۆ:**\n"
             f"🆔 ئایدی (ID): `{user_id}`\n"
-            f"🌐 لینکا تایبەت (Safari / مۆبایل): `{user_link}`\n"
+            f"🌐 لینکی تایبەت (Safari / مۆبایل): `{user_link}`\n"
             f"💰 باڵانسی تۆ: `{user_data['balance']}` دینار\n\n"
             f"👑 خاوەنەکانی بۆت: {OWNER_TAGS}"
         )
+        keyboard = [
+            [InlineKeyboardButton("⚡️ دروستکردنی QR Code (١)", callback_data="make_qr_1"),
+             InlineKeyboardButton("⚡️ دروستکردنی QR Code (٢)", callback_data="make_qr_2")],
+            [InlineKeyboardButton("⚡️ دروستکردنی QR Code (٣)", callback_data="make_qr_3"),
+             InlineKeyboardButton("⚡️ دروستکردنی QR Code (٤)", callback_data="make_qr_4")],
+            [InlineKeyboardButton("👤 ژمارە و زانیارییەکانم", callback_data="my_info")],
+            [InlineKeyboardButton("💳 نوێکردنەوەی اشتڕاک", callback_data="buy_subs")]
+        ]
     else:
         welcome_message = (
-            f"✨ سڵاو بەڕێز **{nickname}**، بە خێر هاتیت بۆ بۆتی فەرمی! 🌟\n\n"
-            f"❌ بۆ بینینی QR Code و بەکارهێنانی بۆتەکە، پێویستە اشتڕاکێک بکڕیت.\n"
-            f"💎 تکایە لە دوگمەی خوارەوە یەکێک لە اشتڕاکەکان هەڵبژێرە بۆ بەردەوامبوون.\n\n"
+            f"✨ سڵاو بەڕێز **{nickname}**، بە خێر هاتیت بۆ بۆتی فەرمی! 🚀\n\n"
+            f"❌ اشتراکی تۆ بەسەرچووە یان هیچ اشتڕاکێکت نییە.\n"
+            f"⚡️ تکایە لە دوگمەی خوارەوە جۆرێک لە اشتڕاکەکان هەڵبژێرە بۆ کڕین و چالاککردنەوەی بۆتەکە!\n\n"
             f"📌 **زانیارییەکانی ئەکاونتی تۆ:**\n"
             f"🆔 ئایدی (ID): `{user_id}`\n"
-            f"🌐 لینکا تایبەت (Safari / مۆبایل): `{user_link}`\n"
+            f"🌐 لینکی تایبەت: `{user_link}`\n"
             f"💰 باڵانسی تۆ: `{user_data['balance']}` دینار\n\n"
             f"👑 خاوەنەکانی بۆت: {OWNER_TAGS}"
         )
-
-    keyboard = [
-        [InlineKeyboardButton("💳 کڕینی اشتڕاکەکان", callback_data="buy_subs")],
-        [InlineKeyboardButton("👤 ژمارە و زانیارییەکانم", callback_data="my_info")],
-    ]
+        keyboard = [
+            [InlineKeyboardButton("💎 کڕینی اشتڕاکەکان (لیست)", callback_data="buy_subs")],
+            [InlineKeyboardButton("👤 ژمارە و زانیارییەکانم", callback_data="my_info")],
+        ]
 
     if user_id in OWNERS:
         keyboard.append([InlineKeyboardButton("⚙️ پەنێڵی بەڕێوەبەری (Admin Panel)", callback_data="admin_panel")])
@@ -109,13 +114,13 @@ async def button_handler(update: Update, context: ContextTypes.DEFAULT_TYPE) -> 
         user = query.from_user
         user_data = users_db[user_id]
         user_link = f"https://t.me/{BOT_USERNAME}?start={user_id}"
-        sub_status = user_data["subscription"] if check_user_active(user_id) else "هیچ اشتڕاکێک نییە"
+        sub_status = user_data["subscription"] if check_user_active(user_id) else "❌ هیچ اشتڕاکێکت نییە"
         info_text = (
             f"👤 **زانیارییەکانی ئەکاونت و مۆبایلی تۆ:**\n\n"
             f"▫️ ناوی خوازراو: {user.first_name}\n"
             f"🆔 ئایدی (ID): `{user.id}`\n"
             f"🔗 یۆزەرسەید: @{user.username if user.username else 'نەدیار'}\n"
-            f"🌐 لینکا تایبەت: `{user_link}`\n"
+            f"🌐 لینکی تایبەت: `{user_link}`\n"
             f"💰 باڵانس: `{user_data['balance']}` دینار\n"
             f"📦 اشتراکی چالاک: {sub_status}"
         )
@@ -125,19 +130,19 @@ async def button_handler(update: Update, context: ContextTypes.DEFAULT_TYPE) -> 
     elif data == "buy_subs":
         sub_text = (
             "💎 **لیستی اشتڕاکەکان و نرخی ئەوان:**\n\n"
-            "تکایە یەکێک لە اشتڕاکێن خوارەوە هەڵبژێرە بۆ کڕین:\n\n"
+            "👇 تکایە جۆرێک هەڵبژێرە بۆ کڕین:\n\n"
             "1️⃣ اشتراکی ١ مانگ ⬅️ ٥,٠٠٠ دینار\n"
-            "2️⃣ اشتراکی ٦ مانگ ⬅️ ١٥,٠٠٠ دینار\n"
+            "2️⃣ اشتراکی ٦ مانگ ⬅️️ ١٥,٠٠٠ دینار\n"
             "3️⃣ اشتراکی ١ ساڵ ⬅️ ٢٥,٠٠٠ دینار\n"
             "4️⃣ اشتراکی بۆ هەتا هەتایێ ⬅️ ٥٠,٠٠٠ دینار\n\n"
             "💬 بۆ زیادکردنی باڵانس، سەردانی خاوەنەکانی بۆت بکەن:\n"
             "👑 @Y2_KRD یان @B4llam"
         )
         keyboard = [
-            [InlineKeyboardButton("🛒 کڕینی ١ مانگ (٥,٠٠٠)", callback_data="sub_1m")],
-            [InlineKeyboardButton("🛒 کڕینی ٦ مانگ (١٥,٠٠٠)", callback_data="sub_6m")],
-            [InlineKeyboardButton("🛒 کڕینی ١ ساڵ (٢٥,٠٠٠)", callback_data="sub_1y")],
-            [InlineKeyboardButton("🛒 کڕینی بۆ هەتا هەتایێ (٥٠,٠٠٠)", callback_data="sub_life")],
+            [InlineKeyboardButton("🛒 کڕینی ١ مانگ (٥,٠٠٠ دینار)", callback_data="sub_1m")],
+            [InlineKeyboardButton("🛒 کڕینی ٦ مانگ (١٥,٠٠٠ دینار)", callback_data="sub_6m")],
+            [InlineKeyboardButton("🛒 کڕینی ١ ساڵ (٢٥,٠٠٠ دینار)", callback_data="sub_1y")],
+            [InlineKeyboardButton("🛒 کڕینی بۆ هەتا هەتایێ (٥٠,٠٠٠ دینار)", callback_data="sub_life")],
             [InlineKeyboardButton("🔙 گەڕانەوە", callback_data="back_start")]
         ]
         await query.edit_message_text(sub_text, reply_markup=InlineKeyboardMarkup(keyboard), parse_mode="Markdown")
@@ -153,14 +158,10 @@ async def button_handler(update: Update, context: ContextTypes.DEFAULT_TYPE) -> 
             users_db[user_id]["sub_expiry"] = get_baghdad_time() + timedelta(days=days)
             users_db[user_id]["subscription"] = data
             
-            user_link = f"https://t.me/{BOT_USERNAME}?start={user_id}"
             success_text = (
                 f"✅ **پەیامی سەرکەوتوویی!**\n\n"
-                f"🎉 اشتراکی تۆ بە سەرکەوتوویی هاتە چالاکردن!\n"
-                f"🔗 ئێستا دەتوانیت لینکا دروستکرنا QR Code بەکار بهێنیت:\n"
-                f"👉 `https://t.me/joinchannel_qr_link`\n\n"
-                f"🌐 لینکا تایبەت یا مۆبایلا تە (Safari):\n"
-                f"`{user_link}`\n\n"
+                f"🎉 اشتراکی تۆ بە سەرکەوتوویی کڕرا و چالاک بوو!\n"
+                f"⚡️ ئێستا بۆتەکە بە تەواوی بۆت کار دەکات و دەتوانیت QR Code دروست بکەیت.\n\n"
                 f"💰 باڵانسی ماوەی تۆ: `{users_db[user_id]['balance']}` دینار"
             )
             keyboard = [[InlineKeyboardButton("🔙 گەڕانەوە بۆ سەرەتا", callback_data="back_start")]]
@@ -168,18 +169,26 @@ async def button_handler(update: Update, context: ContextTypes.DEFAULT_TYPE) -> 
         else:
             fail_text = (
                 f"❌ **باڵانسی تۆ بەس نییە!**\n\n"
-                f"پێویستە باڵانسی تۆ بگاتە `{cost}` دیناران بۆ کڕینا ڤی اشتراکی.\n"
-                f"تکایە بۆ پڕکردنا باڵانسی خۆت سەردانی @Y2_KRD یان @B4llam بکە."
+                f"پێویستە باڵانسی تۆ بگاتە `{cost}` دیناران بۆ کڕینی ئەم اشتڕاکە.\n"
+                f"تکایە بۆ پڕکردنەوەی باڵانسی خۆت سەردانی @Y2_KRD یان @B4llam بکە."
             )
-            keyboard = [[InlineKeyboardButton("🔙 گەڕانەوە", callback_data="buy_subs")]]
+            keyboard = [[InlineKeyboardButton("🔙 گەڕانەوە بۆ لیستی اشتڕاکەکان", callback_data="buy_subs")]]
             await query.edit_message_text(fail_text, reply_markup=InlineKeyboardMarkup(keyboard), parse_mode="Markdown")
+
+    elif data.startswith("make_qr_"):
+        if check_user_active(user_id):
+            qr_text = f"⚡️ QR Code دروستکرا بە سەرکەوتوویی بۆ خزمەتگوزاری ({data[-1]})!\n🔗 لینک: `https://t.me/joinchannel_qr_link`"
+            keyboard = [[InlineKeyboardButton("🔙 گەڕانەوە", callback_data="back_start")]]
+            await query.edit_message_text(qr_text, reply_markup=InlineKeyboardMarkup(keyboard), parse_mode="Markdown")
+        else:
+            await start(update, context)
 
     elif data == "admin_panel" and user_id in OWNERS:
         admin_text = (
             "⚙️ **پەنێڵی بەڕێوەبەری (Admin Panel):**\n\n"
-            "🔹 بۆ زیادکردنی باڵانس بۆ هەر بەکارهێنەرەکێ، ڤی فەرمانە ل چاتێ بەکار بهێنە:\n"
+            "🔹 بۆ زیادکردنی باڵانس بۆ هەر بەکارهێنەرێک، ئەم فەرمانە لە چاتدا بەکار بهێنە:\n"
             "`/addbalance [ID] [بڕ]`\n\n"
-            "🔹 بۆ بینینا گشت کەسێن اشتراک کڕین:\n"
+            "🔹 بۆ بینینی گشت کەسێن اشتراک کڕین:\n"
             "/subscribers"
         )
         keyboard = [[InlineKeyboardButton("🔙 گەڕانەوە", callback_data="back_start")]]
@@ -201,11 +210,11 @@ async def add_balance(update: Update, context: ContextTypes.DEFAULT_TYPE) -> Non
 
         if target_id in users_db:
             users_db[target_id]["balance"] += amount
-            await update.message.reply_text(f"✅ بڕێ `{amount}` دینار بە سەرکەوتوویی بۆ ئایدی `{target_id}` زیاد کرا.", parse_mode="Markdown")
+            await update.message.reply_text(f"✅ بڕی `{amount}` دینار بە سەرکەوتوویی بۆ ئایدی `{target_id}` زیاد کرا.", parse_mode="Markdown")
         else:
-            await update.message.reply_text("❌ ئەڤ ئایدییە لە سیستەمدا نییە (پێویستە بەکارهێنەر پێشتر /start ل بۆتی لێدابێت).")
+            await update.message.reply_text("❌ ئەم ئایدییە لە سیستەمدا نییە (پێویستە بەکارهێنەر پێشتر /start لە بۆتەکەدا لێدابێت).")
     except Exception:
-        await update.message.reply_text("⚠️ هەڵە لە فۆرماتا فەرمانی! بەکار بهێنە: `/addbalance [ID] [بڕ]`", parse_mode="Markdown")
+        await update.message.reply_text("⚠️ هەڵە لە فۆرماتی فەرمانەکە! بەکار بهێنە: `/addbalance [ID] [بڕ]`", parse_mode="Markdown")
 
 async def list_subscribers(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
     user_id = update.effective_user.id
@@ -220,7 +229,7 @@ async def list_subscribers(update: Update, context: ContextTypes.DEFAULT_TYPE) -
             text += f"👤 {udata['nickname']} (ID: `{uid}`)\n📦 جۆر: {udata['subscription']}\n⏳ ماوە: {udata['sub_expiry']}\n\n"
     
     if count == 0:
-        text += "هیچ کەسەک اشتراکی نینە."
+        text += "هیچ کەسێک اشتراکی چالاکی نییە."
 
     await update.message.reply_text(text, parse_mode="Markdown")
 
@@ -232,7 +241,7 @@ def main() -> None:
     app.add_handler(CommandHandler("subscribers", list_subscribers))
     app.add_handler(CallbackQueryHandler(button_handler))
 
-    print("بۆت دەستپێکرد و بە تەواوی و ب زمانێ سۆرانی کار دەکات...")
+    print("بۆت دەستپێکرد و بە شێوازێکی پرێمیوم و سۆرانییا پەتی کار دەکات...")
     app.run_polling()
 
 if __name__ == "__main__":
