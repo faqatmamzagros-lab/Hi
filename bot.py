@@ -37,10 +37,6 @@ TEXTS = {
         "new_link_ready": "✅ لینکا تە یا نوێ ئامادەیە!\n\n🔗 {url}",
         "btn_open": "🎯 ڤەکرنا لینکێ",
         "btn_generate": "🔄 دروستکرنا لینکا نوێ",
-        "stats": (
-            "📊 دۆخێ بۆتی: ب باشی کاردکەت!\nدشێی /start بکاربینی بۆ"
-            " دروستکرنا لێنکی."
-        ),
     },
     "sorani": {
         "join_req": (
@@ -56,10 +52,6 @@ TEXTS = {
         "new_link_ready": "✅ لینکی نوێت ئامادەیە!\n\n🔗 {url}",
         "btn_open": "🎯 بەستەر بکەرەوە",
         "btn_generate": "🔄 دروستکردنی لینکی نوێ",
-        "stats": (
-            "📊 دۆخی بۆت: بە باشی کاردەکات!\nدەتوانی /start بەکاربهێنیت بۆ"
-            " دروستکردنی لینک."
-        ),
     },
     "en": {
         "join_req": (
@@ -75,9 +67,6 @@ TEXTS = {
         "new_link_ready": "✅ Your New Link is Ready!\n\n🔗 {url}",
         "btn_open": "🎯 Open Link",
         "btn_generate": "🔄 Generate New Link",
-        "stats": (
-            "📊 Bot Status: Running smoothly!\nUse /start to generate links."
-        ),
     },
     "ar": {
         "join_req": f"⚠️ يرجى الانضمام إلى قناتنا أولاً لاستخدام البوت:\n\n📢 {CHANNEL_USERNAME}",
@@ -88,7 +77,6 @@ TEXTS = {
         "new_link_ready": "✅ الرابط الجديد الخاص بك جاهز!\n\n🔗 {url}",
         "btn_open": "🎯 فتح الرابط",
         "btn_generate": "🔄 إنشاء رابط جديد",
-        "stats": "📊 حالة البوت: يعمل بنجاح!\nاستخدم /start لإنشاء رابط.",
     },
 }
 
@@ -105,7 +93,7 @@ async def check_channel_member(bot, user_id: int) -> bool:
 
 
 async def show_join_message(update: Update, lang: str):
-    t = TEXTS.get(lang, TEXTS["badini"])
+    t = TEXTS.get(lang, TEXTS["sorani"])
     clean_username = CHANNEL_USERNAME.replace("@", "")
     channel_url = f"https://t.me/{clean_username}"
 
@@ -137,7 +125,10 @@ async def ask_language(update: Update):
         ],
     ]
     reply_markup = InlineKeyboardMarkup(keyboard)
-    msg = "🌐 زەحمەت نەبێت زمانەک هەڵبژێرە / Please select a language:"
+    msg = (
+        "🌐 تکایە زمانێک هەڵبژێرە / زەحمەت نەبێت زمانەک هەڵبژێرە / Please select"
+        " a language:"
+    )
 
     if update.message:
         await update.message.reply_text(
@@ -153,8 +144,8 @@ async def send_main_link(
     update: Update, context: ContextTypes.DEFAULT_TYPE, is_new: bool = False
 ):
     user_id = str(update.effective_user.id)
-    lang = user_languages.get(int(user_id), "badini")
-    t = TEXTS.get(lang, TEXTS["badini"])
+    lang = user_languages.get(int(user_id), "sorani")
+    t = TEXTS.get(lang, TEXTS["sorani"])
 
     user_url = f"{BASE_URL}?chat_id={user_id}"
 
@@ -183,19 +174,20 @@ async def send_main_link(
 async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
     user_id = update.effective_user.id
 
-    # ئەگەر زمانێ بەکارهێنەری دیار نەبێت، سەرەتا زمانەکێ هەڵبژێرێت
+    # 1. ئەگەر بەکارهێنەر هێشتا زمان هەڵنەبژێرابێت، لیستەکا زمانان نیشا ددات
     if user_id not in user_languages:
         await ask_language(update)
         return
 
     lang = user_languages[user_id]
 
-    # پاشان پشکنینا کەناڵی
+    # 2. پشکنینا جۆینبوونا کەناڵی
     is_joined = await check_channel_member(context.bot, user_id)
     if not is_joined:
         await show_join_message(update, lang)
         return
 
+    # 3. ئەگەر جۆین بوو، لینکا تایبەت بۆ خۆی دەنێرێت
     await send_main_link(update, context, is_new=False)
 
 
@@ -204,12 +196,13 @@ async def button_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
     user_id = query.from_user.id
     data = query.data
 
+    # کاتێک زمانەک هەڵدەبژێرێت
     if data.startswith("set_lang_"):
         await query.answer()
         selected_lang = data.replace("set_lang_", "")
         user_languages[user_id] = selected_lang
 
-        # پاش هەڵبژارتنا زمانێ، پشکنینا کەناڵی بـکە
+        # پاش هەڵبژارتنا زمانێ، دەستبەجێ پشکنینا جۆینبوونا کەناڵی دکەین
         is_joined = await check_channel_member(context.bot, user_id)
         if not is_joined:
             await show_join_message(update, selected_lang)
@@ -224,6 +217,7 @@ async def button_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
     lang = user_languages[user_id]
 
+    # کاتێک دوگمەیا پشکنینا جۆین بوونێ لێدەت
     if data == "check_join":
         is_joined = await check_channel_member(context.bot, user_id)
         if is_joined:
@@ -231,32 +225,30 @@ async def button_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
             await send_main_link(update, context, is_new=False)
         else:
             await query.answer(
-                TEXTS[lang].get("not_joined", "Not joined"), show_alert=True
+                TEXTS[lang].get(
+                    "not_joined",
+                    "❌ You have not joined the channel yet! Please join first.",
+                ),
+                show_alert=True,
             )
         return
 
+    # دووبارە پشکنینا کەناڵی بۆ هەموارکرنا دوگمەیێن دی
     if not await check_channel_member(context.bot, user_id):
         await query.answer()
         await show_join_message(update, lang)
         return
 
+    # دروستکرنا لینکا نوێ
     if data == "generate":
         await query.answer()
         await send_main_link(update, context, is_new=True)
-
-
-async def stats(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    user_id = update.effective_user.id
-    lang = user_languages.get(user_id, "badini")
-    t = TEXTS.get(lang, TEXTS["badini"])
-    await update.message.reply_text(t["stats"], parse_mode="Markdown")
 
 
 if __name__ == "__main__":
     app = ApplicationBuilder().token(BOT_TOKEN).build()
 
     app.add_handler(CommandHandler("start", start))
-    app.add_handler(CommandHandler("stats", stats))
     app.add_handler(CallbackQueryHandler(button_handler))
 
     print("Bot is starting...")
