@@ -184,12 +184,13 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
     user_id = update.effective_user.id
     lang = user_languages.get(user_id, "badini")
 
-    # پشکنینا جۆین بوونێ بەری هەموو شتەکی
+    # 1. پشکنینا کەنالی بەر لە هەر تشتەکی دهێتە کرن
     is_joined = await check_channel_member(context.bot, user_id)
     if not is_joined:
         await show_join_message(update, lang)
         return
 
+    # 2. ئەگەر جۆین بوو، پاشان تەماشای زمانێ دکەت
     if user_id not in user_languages:
         await ask_language(update)
         return
