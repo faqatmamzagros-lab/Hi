@@ -182,17 +182,18 @@ async def send_main_link(
 
 async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
     user_id = update.effective_user.id
-    lang = user_languages.get(user_id, "badini")
 
-    # 1. پشکنینا کەنالی بەر لە هەر تشتەکی دهێتە کرن
+    # ئەگەر زمانێ بەکارهێنەری دیار نەبێت، سەرەتا زمانەکێ هەڵبژێرێت
+    if user_id not in user_languages:
+        await ask_language(update)
+        return
+
+    lang = user_languages[user_id]
+
+    # پاشان پشکنینا کەناڵی
     is_joined = await check_channel_member(context.bot, user_id)
     if not is_joined:
         await show_join_message(update, lang)
-        return
-
-    # 2. ئەگەر جۆین بوو، پاشان تەماشای زمانێ دکەت
-    if user_id not in user_languages:
-        await ask_language(update)
         return
 
     await send_main_link(update, context, is_new=False)
@@ -208,6 +209,7 @@ async def button_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
         selected_lang = data.replace("set_lang_", "")
         user_languages[user_id] = selected_lang
 
+        # پاش هەڵبژارتنا زمانێ، پشکنینا کەناڵی بـکە
         is_joined = await check_channel_member(context.bot, user_id)
         if not is_joined:
             await show_join_message(update, selected_lang)
@@ -215,16 +217,18 @@ async def button_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
             await send_main_link(update, context, is_new=False)
         return
 
-    lang = user_languages.get(user_id, "badini")
+    if user_id not in user_languages:
+        await query.answer()
+        await ask_language(update)
+        return
+
+    lang = user_languages[user_id]
 
     if data == "check_join":
         is_joined = await check_channel_member(context.bot, user_id)
         if is_joined:
             await query.answer("✅ ڕاستیپێدان سەرکەوتووبوو!")
-            if user_id not in user_languages:
-                await ask_language(update)
-            else:
-                await send_main_link(update, context, is_new=False)
+            await send_main_link(update, context, is_new=False)
         else:
             await query.answer(
                 TEXTS[lang].get("not_joined", "Not joined"), show_alert=True
